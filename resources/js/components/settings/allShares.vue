@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, inject, defineExpose, computed } from 'vue'
-import { getAllShares, expireShare, extendShare, setDownloadLimit } from '../../api'
+import { getAllShares, expireShare, extendShare, setDownloadLimit, requestShareDeletion, undoShareDeletion, deleteShareImmediately } from '../../api'
 import {
   SquareArrowOutUpRight,
   CalendarPlus,
@@ -9,7 +9,11 @@ import {
   MessageCircleQuestion,
   Rocket,
   Lock,
-  LockOpen
+  LockOpen,
+  Clock,
+  Trash2,
+  Undo2,
+  OctagonX
 } from 'lucide-vue-next'
 import { useToast } from 'vue-toastification'
 import { niceFileSize, niceDate, niceFileName, niceNumber } from '../../utils'
@@ -95,7 +99,58 @@ const enableExtendShareButton = (share) => {
 }
 
 const enableDownloadButton = (share) => {
-  return !share.expired && !share.deleted
+  return !share.expired && !share.deleted && !share.pending_deletion
+}
+
+const enableExpireShareButton = (share) => {
+  return !share.expired && !share.deleted && !share.pending_deletion
+}
+
+const enableExtendShareButton = (share) => {
+  return !share.deleted && !share.pending_deletion
+}
+
+const handleRequestDeletionClick = async (share) => {
+  const confirmed = confirm(`Place share "${share.name}" into pending deletion? The link will stop working immediately.`)
+  if (!confirmed) return
+  requestShareDeletion(share.id)
+    .then(() => {
+      toast.success('Share marked for deletion')
+      loadShares()
+    })
+    .catch((error) => {
+      toast.error('Failed to mark share for deletion')
+    })
+}
+
+const handleUndoDeletionClick = async (share) => {
+  undoShareDeletion(share.id)
+    .then(() => {
+      toast.success('Share deletion undone')
+      loadShares()
+    })
+    .catch((error) => {
+      toast.error('Failed to undo share deletion')
+    })
+}
+
+const handleDeleteImmediatelyClick = async (share) => {
+  const confirmation = prompt(
+    `Type "delete" to immediately remove all files for share "${share.name}".\n\nThis cannot be undone.`
+  )
+  if (confirmation === null) return  // user cancelled
+  deleteShareImmediately(share.id, confirmation)
+    .then(() => {
+      toast.success('Share deleted immediately')
+      loadShares()
+    })
+    .catch((error) => {
+      toast.error(error.message || 'Failed to delete share')
+    })
+}
+
+const canDeleteImmediately = (share) => {
+  return share.pending_deletion || (share.expired && !share.deleted)
 }
 
 const setShowDeletedShares = (value) => {
@@ -160,6 +215,11 @@ defineExpose({
                 <LockOpen />
                 {{ $t('share.passwordNotProtected') }}
               </template>
+            </div>
+            <div v-if="share.pending_deletion" class="pending-deletion-badge">
+              <Clock />
+              {{ $t('share.status.pendingDeletion') }}
+              <span class="deletion-requester">({{ share.deletion_requested_by }})</span>
             </div>
           </td>
           <td width="1" style="white-space: nowrap">
@@ -254,6 +314,35 @@ defineExpose({
             >
               <HardDriveDownload style="margin-right: 0" />
             </button>
+            <template v-if="!share.pending_deletion && !share.deleted">
+              <button
+                @click="handleRequestDeletionClick(share)"
+                class="danger"
+                :title="$t('share.button.requestDeletion')"
+              >
+                <Trash2 />
+                {{ $t('share.button.requestDeletion') }}
+              </button>
+            </template>
+            <template v-if="share.pending_deletion">
+              <button
+                @click="handleUndoDeletionClick(share)"
+                class="secondary"
+              >
+                <Undo2 />
+                {{ $t('share.button.undoDeletion') }}
+              </button>
+            </template>
+            <template v-if="canDeleteImmediately(share)">
+              <button
+                @click="handleDeleteImmediatelyClick(share)"
+                class="danger"
+                :title="$t('share.button.deleteImmediately')"
+              >
+                <OctagonX />
+                {{ $t('share.button.deleteImmediately') }}
+              </button>
+            </template>
           </td>
         </tr>
       </tbody>
@@ -492,6 +581,29 @@ td {
     width: 1rem;
     height: 1rem;
     margin-top: -2px;
+  }
+}
+
+.pending-deletion-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.65rem;
+  color: var(--panel-section-text-color);
+  background: var(--panel-section-background-color-alt);
+  border-radius: 4px;
+  padding: 2px 6px;
+  margin-top: 4px;
+  opacity: 0.8;
+
+  svg {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
+
+  .deletion-requester {
+    opacity: 0.6;
+    font-style: italic;
   }
 }
 </style>

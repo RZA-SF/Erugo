@@ -962,6 +962,49 @@ export const pruneExpiredShares = async () => {
   return data.data.shares
 }
 
+export const requestShareDeletion = async (id) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}/request-deletion`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data.share
+}
+
+export const deleteShareImmediately = async (id, confirmation) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}/delete-immediately`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    },
+    body: JSON.stringify({ confirmation })
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data.share
+}
+
+export const undoShareDeletion = async (id) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}/undo-deletion`, {
+    method: 'POST',
+    headers: {
+      ...addJsonHeader()
+    }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data.data.share
+}
+
 export const getShare = async (id) => {
   const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}`, {
     method: 'GET',

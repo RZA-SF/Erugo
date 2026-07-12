@@ -42,6 +42,13 @@ class SharesController extends Controller
       ], 404);
     }
 
+    if (in_array($share->status, ['pending_deletion', 'deleted'])) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Share not found'
+      ], 404);
+    }
+
     if ($share->expires_at < Carbon::now()) {
       return response()->json([
         'status' => 'error',
@@ -163,6 +170,10 @@ class SharesController extends Controller
 
     $share = Share::where('long_id', $shareId)->with('files')->first();
     if (!$share) {
+      return redirect()->to('/shares/' . $shareId);
+    }
+
+    if (in_array($share->status, ['pending_deletion', 'deleted'])) {
       return redirect()->to('/shares/' . $shareId);
     }
 
@@ -605,6 +616,131 @@ class SharesController extends Controller
     ]);
   }
 
+
+  /**
+   * Mark a share as pending deletion. The share link stops working immediately.
+   * Files are cleaned up when an admin runs "Delete immediately" (F5) or the
+   * scheduled cleanup job processes pending_deletion shares.
+   * Both the share owner and admins may call this.
+   */
+  public function requestDeletion($shareId)
+  {
+    $user = Auth::user();
+    if (!$user) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    $share = Share::where('id', $shareId)->first();
+    if (!$share) {
+      return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
+    }
+
+    if (!$this->canManageShare($share, $user)) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    if (in_array($share->status, ['pending_deletion', 'deleted'])) {
+      return response()->json(['status' => 'error', 'message' => 'Share is already pending deletion or deleted'], 422);
+    }
+
+    $share->status = 'pending_deletion';
+    $share->deletion_requested_at = Carbon::now();
+    $share->deletion_requested_by = $user->admin ? 'admin' : 'user';
+    $share->save();
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Share marked for deletion',
+      'data' => ['share' => $share]
+    ]);
+  }
+
+  /**
+   * Undo a pending deletion request. Restores the share to 'ready' status
+   * so the link becomes active again. Only valid while status is still
+   * 'pending_deletion' (i.e. before files have been cleaned up).
+   */
+  public function undoDeletion($shareId)
+  {
+    $user = Auth::user();
+    if (!$user) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    $share = Share::where('id', $shareId)->first();
+    if (!$share) {
+      return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
+    }
+
+    if (!$this->canManageShare($share, $user)) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    if ($share->status !== 'pending_deletion') {
+      return response()->json(['status' => 'error', 'message' => 'Share is not pending deletion'], 422);
+    }
+
+    $share->status = 'ready';
+    $share->deletion_requested_at = null;
+    $share->deletion_requested_by = null;
+    $share->save();
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Share deletion undone',
+      'data' => ['share' => $share]
+    ]);
+  }
+
+  /**
+   * Admin: immediately delete a share's files and mark it as deleted.
+   * Only valid when the share is in pending_deletion, expired, or deleted-awaiting-cleanup state.
+   * Requires a typed confirmation phrase in the request body.
+   */
+  public function deleteImmediately($shareId, Request $request)
+  {
+    $user = Auth::user();
+    if (!$user || !$user->admin) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    $confirmation = $request->input('confirmation');
+    if (strtolower(trim($confirmation ?? '')) !== 'delete') {
+      return response()->json(['status' => 'error', 'message' => 'Confirmation required — type "delete" to confirm'], 422);
+    }
+
+    $share = Share::where('id', $shareId)->first();
+    if (!$share) {
+      return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
+    }
+
+    // Only allow immediate deletion for shares in an actionable state
+    $actionableStatuses = ['pending_deletion', 'deleted'];
+    $isExpired = $share->expires_at !== null && $share->expires_at < Carbon::now();
+
+    if (!in_array($share->status, $actionableStatuses) && !$isExpired) {
+      return response()->json([
+        'status' => 'error',
+        'message' => 'Share must be pending deletion or expired before it can be immediately deleted'
+      ], 422);
+    }
+
+    if ($share->status === 'deleted') {
+      return response()->json(['status' => 'error', 'message' => 'Share is already deleted'], 422);
+    }
+
+    $cleaned = $share->cleanFiles();
+
+    if (!$cleaned) {
+      return response()->json(['status' => 'error', 'message' => 'Failed to delete share files'], 500);
+    }
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Share deleted immediately',
+      'data' => ['share' => $share]
+    ]);
+  }
 
   public function generateLongId()
   {
