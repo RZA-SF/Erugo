@@ -85,14 +85,6 @@ const downloadShare = async (share) => {
   window.location.href = `/api/shares/${share.long_id}/download`
 }
 
-const enableExpireShareButton = (share) => {
-  return !share.expired && !share.deleted
-}
-
-const enableExtendShareButton = (share) => {
-  return !share.deleted
-}
-
 const enableDownloadButton = (share) => {
   return !share.expired && !share.deleted && !share.pending_deletion
 }
