@@ -138,6 +138,12 @@ Route::group([], function ($router) {
 
         //undo a pending deletion request
         Route::post('/{id}/undo-deletion', [SharesController::class, 'undoDeletion'])->name('shares.undoDeletion');
+
+        //add files to existing share (multi-file)
+        Route::post('/{id}/add-files', [UploadsController::class, 'addFilesToShare'])->name('shares.addFiles');
+
+        //replace the single file in a single-file share
+        Route::post('/{id}/replace-file', [UploadsController::class, 'replaceShareFile'])->name('shares.replaceFile');
     });
 
     //all shares [auth, admin]
