@@ -11,12 +11,14 @@ import {
   Lock,
   LockOpen,
   ArrowLeftRight,
-  FilePlus2
+  FilePlus2,
+  Copy
 } from 'lucide-vue-next'
 import { useToast } from 'vue-toastification'
 import { niceFileSize, niceDate, niceFileName, niceNumber } from '../../utils'
 import HelpTip from '../helpTip.vue'
 import ManageShareFilesModal from '../ManageShareFilesModal.vue'
+import CloneShareModal from '../CloneShareModal.vue'
 import { useTranslate } from '@tolgee/vue'
 
 const { t } = useTranslate()
@@ -31,6 +33,7 @@ const loadedShares = ref(false)
 const shares = ref([])
 const showDeletedShares = ref(false)
 const manageFilesShare = ref(null)
+const cloneShareTarget = ref(null)
 
 onMounted(async () => {
   showDeletedShares.value = localStorage.getItem('showDeletedShares') === 'true'
@@ -132,6 +135,12 @@ defineExpose({
       v-if="manageFilesShare"
       :share="manageFilesShare"
       @close="manageFilesShare = null"
+      @done="loadShares"
+    />
+    <CloneShareModal
+      v-if="cloneShareTarget"
+      :share="cloneShareTarget"
+      @close="cloneShareTarget = null"
       @done="loadShares"
     />
     <HelpTip id="download-limit-help-tip" :header="$t('settings.help.downloadLimit.title')">
@@ -272,6 +281,14 @@ defineExpose({
               :title="share.files.length === 1 ? 'Replace file' : 'Add files'"
             >
               <FilePlus2 style="margin-right: 0" />
+            </button>
+            <button
+              v-if="!share.deleted"
+              @click="cloneShareTarget = share"
+              class="secondary icon-only"
+              title="Clone share"
+            >
+              <Copy style="margin-right: 0" />
             </button>
           </td>
         </tr>
