@@ -725,13 +725,15 @@
     },
     "expiredShares": {
       "title": "{count, plural, one {1 expired share} other {# expired shares}}",
-      "notice": "These shares have expired and their files are still stored on disk. Click the button to remove the files and free up space.",
-      "cleanUp": "Clean up expired shares"
+      "notice": "These shares have expired and their files are still stored on disk. To remove them, select 'Request Deletion' from the share's action menu."
     },
     "pendingDeletion": {
       "title": "Pending Deletion",
       "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
-      "requestedOn": "Requested On"
+      "requestedOn": "Requested On",
+      "deleteAll": "Delete all permanently",
+      "confirmPrompt": "Type DELETE to permanently remove all pending shares and their files. This cannot be undone.",
+      "confirmMismatch": "Confirmation did not match — deletion cancelled."
     },
     "system": {
       "allow_chunked_uploads": "Allow chunked upload mode",

@@ -661,18 +661,18 @@ class SharesController extends Controller
       ], 401);
     }
 
-    // Include shares the user owns OR shares created for them via reverse share invites
+    // Only clean up shares that have been explicitly requested for deletion
     $shares = Share::where(function ($query) use ($user) {
       $query->where('user_id', $user->id)
         ->orWhereHas('invite', function ($q) use ($user) {
           $q->where('user_id', $user->id);
         });
-    })->where('expires_at', '<', Carbon::now())->get();
+    })->where('status', 'pending_deletion')->get();
     cleanSpecificShares::dispatch($shares->pluck('id')->toArray(), $user->id);
 
     return response()->json([
       'status' => 'success',
-      'message' => 'Expired shares scheduled for deletion',
+      'message' => 'Pending deletion shares scheduled for cleanup',
       'data' => [
         'shares' => $shares
       ]

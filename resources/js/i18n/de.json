@@ -951,13 +951,15 @@
     },
     "expiredShares": {
       "title": "{count, plural, one {1 abgelaufener Share} other {# abgelaufene Shares}}",
-      "notice": "Diese Shares sind abgelaufen und die Dateien sind noch auf dem Datenträger gespeichert. Klicken Sie auf die Schaltfläche, um die Dateien zu entfernen und Speicherplatz freizugeben.",
-      "cleanUp": "Abgelaufene Shares bereinigen"
+      "notice": "Diese Shares sind abgelaufen und die Dateien sind noch auf dem Datenträger gespeichert. Um sie zu entfernen, wählen Sie im Aktionsmenü des Shares 'Löschung beantragen'."
     },
     "pendingDeletion": {
-      "title": "Pending Deletion",
-      "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
-      "requestedOn": "Requested On"
+      "title": "Löschung ausstehend",
+      "description": "Für die folgenden Shares wurde eine Löschung beantragt. Sie können dies rückgängig machen, bevor sie dauerhaft entfernt werden.",
+      "requestedOn": "Beantragt am",
+      "deleteAll": "Alle dauerhaft löschen",
+      "confirmPrompt": "Geben Sie DELETE ein, um alle ausstehenden Shares und ihre Dateien dauerhaft zu entfernen. Dies kann nicht rückgängig gemacht werden.",
+      "confirmMismatch": "Bestätigung stimmte nicht überein — Löschung abgebrochen."
     }
   },
   "setup": {

@@ -951,13 +951,15 @@
     },
     "expiredShares": {
       "title": "{count, plural, one {1 partage expiré} other {# partages expirés}}",
-      "notice": "Ces partages ont expiré et leurs fichiers sont toujours stockés sur le disque. Cliquez sur le bouton pour supprimer les fichiers et libérer de l'espace.",
-      "cleanUp": "Nettoyer les partages expirés"
+      "notice": "Ces partages ont expiré et leurs fichiers sont toujours stockés sur le disque. Pour les supprimer, sélectionnez 'Demander la suppression' dans le menu d'actions du partage."
     },
     "pendingDeletion": {
-      "title": "Pending Deletion",
-      "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
-      "requestedOn": "Requested On"
+      "title": "Suppression en attente",
+      "description": "Les partages suivants ont été demandés pour suppression. Vous pouvez annuler cela avant qu'ils soient définitivement supprimés.",
+      "requestedOn": "Demandé le",
+      "deleteAll": "Tout supprimer définitivement",
+      "confirmPrompt": "Saisissez DELETE pour supprimer définitivement tous les partages en attente et leurs fichiers. Cette action est irréversible.",
+      "confirmMismatch": "La confirmation ne correspond pas — suppression annulée."
     }
   },
   "setup": {

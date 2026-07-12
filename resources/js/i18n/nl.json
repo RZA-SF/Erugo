@@ -951,13 +951,15 @@
     },
     "expiredShares": {
       "title": "{count, plural, one {1 verlopen share} other {# verlopen shares}}",
-      "notice": "Deze shares zijn verlopen en hun bestanden staan nog steeds op schijf. Klik op de knop om de bestanden te verwijderen en schijfruimte vrij te maken.",
-      "cleanUp": "Verlopen shares opruimen"
+      "notice": "Deze shares zijn verlopen en hun bestanden staan nog steeds op schijf. Om ze te verwijderen, selecteer 'Verwijdering aanvragen' in het actiemenu van de share."
     },
     "pendingDeletion": {
-      "title": "Pending Deletion",
-      "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
-      "requestedOn": "Requested On"
+      "title": "Verwijdering in behandeling",
+      "description": "Voor de volgende shares is verwijdering aangevraagd. U kunt dit ongedaan maken voordat ze permanent worden verwijderd.",
+      "requestedOn": "Aangevraagd op",
+      "deleteAll": "Alles definitief verwijderen",
+      "confirmPrompt": "Typ DELETE om alle wachtende shares en hun bestanden permanent te verwijderen. Dit kan niet ongedaan worden gemaakt.",
+      "confirmMismatch": "Bevestiging komt niet overeen — verwijdering geannuleerd."
     }
   },
   "setup": {

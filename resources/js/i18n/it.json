@@ -951,13 +951,15 @@
     },
     "expiredShares": {
       "title": "{count, plural, one {1 condivisione scaduta} other {# condivisioni scadute}}",
-      "notice": "Queste condivisioni sono scadute e i loro file sono ancora memorizzati sul disco. Fai clic sul pulsante per rimuoverli e liberare spazio.",
-      "cleanUp": "Pulisci le condivisioni scadute"
+      "notice": "Queste condivisioni sono scadute e i loro file sono ancora memorizzati sul disco. Per rimuoverli, seleziona 'Richiedi eliminazione' dal menu azioni della condivisione."
     },
     "pendingDeletion": {
-      "title": "Pending Deletion",
-      "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
-      "requestedOn": "Requested On"
+      "title": "Eliminazione in attesa",
+      "description": "Le seguenti condivisioni sono state richieste per l'eliminazione. È possibile annullare prima che vengano rimosse definitivamente.",
+      "requestedOn": "Richiesto il",
+      "deleteAll": "Elimina tutto definitivamente",
+      "confirmPrompt": "Digita DELETE per rimuovere definitivamente tutte le condivisioni in attesa e i relativi file. Questa azione non può essere annullata.",
+      "confirmMismatch": "La conferma non corrisponde — eliminazione annullata."
     }
   },
   "setup": {
