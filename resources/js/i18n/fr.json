@@ -526,7 +526,8 @@
     },
     "close": "Fermer",
     "confirm": {
-      "pruneExpiredShares": "Êtes-vous sûr de vouloir supprimer vos partages expirés ? Cette opération ne peut pas être annulée."
+      "pruneExpiredShares": "Êtes-vous sûr de vouloir supprimer vos partages expirés ? Cette opération ne peut pas être annulée.",
+      "requestDeletion": "Are you sure you want to request deletion of this share? The share link will stop working immediately."
     },
     "description": {
       "about": "Informations sur votre installation Erugo",
@@ -567,7 +568,9 @@
     "error": {
       "pruneExpiredShares": "Impossible de planifier la suppression des partages expirés !",
       "shareExpired": "Échec de l'expiration du partage",
-      "shareExtended": "Échec de la prolongation du partage"
+      "shareExtended": "Échec de la prolongation du partage",
+      "requestDeletion": "Failed to request share deletion",
+      "undoDeletion": "Failed to undo share deletion request"
     },
     "help": {
       "auth_provider": {
@@ -597,6 +600,11 @@
       "password_confirm": "Confirmer le mot de passe du partage",
       "password_protect_description": "Créez un mot de passe pour votre partage. Toute personne téléchargeant ce partage aura besoin de ce mot de passe pour y accéder. Remarque : après sa création, ce mot de passe sera crypté et nous ne pourrons pas le récupérer pour vous. Veillez à le sauvegarder dans un endroit sûr.",
       "remove_password": "Supprimer le mot de passe"
+    },
+        "diagnostics": {
+      "button": "Diagnostics",
+      "generating": "Collecting\u2026",
+      "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
       "downloads": {
@@ -690,7 +698,9 @@
     "success": {
       "pruneExpiredShares": "Les partages expirés ont été programmées pour être supprimées et seront traités en arrière-plan.",
       "shareExpired": "Partage expiré",
-      "shareExtended": "Partage étendu"
+      "shareExtended": "Partage étendu",
+      "requestDeletion": "Share deletion requested",
+      "undoDeletion": "Share deletion request cancelled"
     },
     "system": {
       "allow_chunked_uploads": "Autoriser le mode de téléchargement en morceaux",
@@ -938,6 +948,16 @@
       "user_updated_successfully": "Mise à jour de l'utilisateur réussie",
       "view_shares": "Voir les partages",
       "you": "Vous"
+    },
+    "expiredShares": {
+      "title": "{count, plural, one {1 partage expiré} other {# partages expirés}}",
+      "notice": "Ces partages ont expiré et leurs fichiers sont toujours stockés sur le disque. Cliquez sur le bouton pour supprimer les fichiers et libérer de l'espace.",
+      "cleanUp": "Nettoyer les partages expirés"
+    },
+    "pendingDeletion": {
+      "title": "Pending Deletion",
+      "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
+      "requestedOn": "Requested On"
     }
   },
   "setup": {
@@ -964,7 +984,11 @@
   "share": {
     "button": {
       "expireNow": "Expirer maintenant",
-      "extend": "Prolonger"
+      "extend": "Prolonger",
+      "requestDeletion": "Request Deletion",
+      "undoDeletion": "Undo Deletion",
+      "deleteImmediately": "Delete Immediately",
+      "removeEntry": "Remove Entry"
     },
     "contains": {
       "count": "{value, plural, one {Contient : fichier} other {Contient : fichiers {value}}}"
@@ -990,7 +1014,10 @@
     },
     "not_found": "Le partage que vous recherchez n'a pas été trouvé. Il se peut que vous deviez vous connecter pour le voir.",
     "passwordNotProtected": "Ouvert",
-    "passwordProtected": "Protégé par un mot de passe"
+    "passwordProtected": "Protégé par un mot de passe",
+    "status": {
+      "pendingDeletion": "Pending Deletion"
+    }
   },
   "total_size": "Taille totale",
   "upload": {

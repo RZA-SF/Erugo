@@ -610,6 +610,9 @@ class UploadsController extends Controller
     $share->size       = $newFile->size;
     $share->file_count = 1;
     $share->status     = 'ready';
+    if ($request->has('name') && filled($request->input('name'))) {
+      $share->name = $request->input('name');
+    }
     $share->save();
 
     return response()->json(['status' => 'success', 'message' => 'File replaced', 'data' => ['share' => $share->fresh(['files'])]]);

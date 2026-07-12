@@ -1,5 +1,6 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import DOMPurify from 'dompurify'
 import { getApiUrl } from '../utils'
 import { useToast } from 'vue-toastification'
 import { domData } from '../domData'
@@ -77,7 +78,10 @@ onMounted(async () => {
   attemptRefresh()
 
   getAvailableAuthProviders().then((data) => {
-    authProviders.value = data
+    authProviders.value = data.map((p) => ({
+      ...p,
+      icon: p.icon ? DOMPurify.sanitize(p.icon, { USE_PROFILES: { svg: true, svgFilters: true } }) : null
+    }))
   })
 
   // Check if self-registration is enabled

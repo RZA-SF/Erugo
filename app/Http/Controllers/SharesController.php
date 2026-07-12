@@ -308,13 +308,21 @@ class SharesController extends Controller
       $expectedPath = $file->full_path ? $file->full_path . '/' . $file->display_name : $file->display_name;
       
       if ($filepath === $expectedPath || $filepath === $file->display_name) {
-        $sharePath = storage_path('app/shares/' . $share->path);
+        $sharePath = realpath(storage_path('app/shares/' . $share->path));
         $filePath = $sharePath . '/' . ($file->full_path ? $file->full_path . '/' : '') . $file->name;
-        
-        if (file_exists($filePath)) {
+        $resolvedFilePath = realpath($filePath);
+
+        // Boundary check: ensure file is within the share directory
+        if ($sharePath === false || $resolvedFilePath === false ||
+            strpos($resolvedFilePath, $sharePath . DIRECTORY_SEPARATOR) !== 0 &&
+            $resolvedFilePath !== $sharePath) {
+          return response()->json(['error' => 'File not found'], 404);
+        }
+
+        if (file_exists($resolvedFilePath)) {
           $this->createDownloadRecord($share);
           return response()->download(
-            $filePath,
+            $resolvedFilePath,
             $this->sanitizeDownloadFilename($file->display_name)
           );
         }
@@ -797,6 +805,43 @@ class SharesController extends Controller
     ]);
   }
 
+  /**
+   * Permanently remove a share record that is already in 'deleted' status.
+   * Files have already been cleaned up; this just removes the DB row.
+   * Available to the share owner or any admin.
+   */
+  public function purgeShare($shareId)
+  {
+    $user = Auth::user();
+    if (!$user) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    $share = Share::where('id', $shareId)->first();
+    if (!$share) {
+      return response()->json(['status' => 'error', 'message' => 'Share not found'], 404);
+    }
+
+    if (!$this->canManageShare($share, $user)) {
+      return response()->json(['status' => 'error', 'message' => 'Unauthorized'], 401);
+    }
+
+    if ($share->status !== 'deleted') {
+      return response()->json(['status' => 'error', 'message' => 'Only shares with status "deleted" can be purged'], 422);
+    }
+
+    // Delete all child rows before removing the share to avoid FK constraint violations.
+    // Neither downloads.share_id nor files.share_id have ON DELETE CASCADE.
+    Download::where('share_id', $share->id)->delete();
+    $share->files()->delete();
+    $share->delete();
+
+    return response()->json([
+      'status' => 'success',
+      'message' => 'Share record removed',
+    ]);
+  }
+
   public function generateLongId()
   {
     $settingsService = new SettingsService();
@@ -918,8 +963,8 @@ class SharesController extends Controller
       return response()->json(['status' => 'error', 'message' => 'Cannot clone a deleted share'], 422);
     }
 
-    $name      = $request->input('name', 'Clone of ' . $share->name);
-    $longId    = 'share-' . Str::random(8);
+    $name      = $request->input('name', $share->name);
+    $longId    = $this->generateLongId();
     $clonePath = $user->id . '/' . $longId;
 
     $clone = Share::create([

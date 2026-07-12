@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { uploadFileWithTus } from '../api'
 import { addFilesToShare, replaceShareFile } from '../api'
 import { useToast } from 'vue-toastification'
@@ -23,6 +23,13 @@ const currentFileName = ref('')
 const fileIndex = ref(0)
 const error = ref(null)
 
+// Replace-mode rename state
+const keepOriginalName = ref(false)
+const shareName = ref(props.share.name)
+
+// Strip file extension to use as a share name suggestion
+const nameWithoutExtension = (filename) => filename.replace(/\.[^.]+$/, '')
+
 const canSubmit = computed(() => selectedFiles.value.length > 0 && !uploading.value)
 
 const handleFileInput = (e) => {
@@ -32,11 +39,27 @@ const handleFileInput = (e) => {
     // webkitRelativePath gives "folder/sub/file.txt"; fall back to just name
     path: f.webkitRelativePath || f.name
   }))
+  // In replace mode, default the share name to the new file's name (minus extension)
+  if (mode.value === 'replace' && raw.length > 0 && !keepOriginalName.value) {
+    shareName.value = nameWithoutExtension(raw[0].name)
+  }
   e.target.value = '' // reset so the same file can be re-picked
 }
 
+// When "Keep original name" is toggled, swap the name field value
+watch(keepOriginalName, (keep) => {
+  if (keep) {
+    shareName.value = props.share.name
+  } else if (selectedFiles.value.length > 0) {
+    shareName.value = nameWithoutExtension(selectedFiles.value[0].file.name)
+  }
+})
+
 const removeFile = (index) => {
   selectedFiles.value.splice(index, 1)
+  if (mode.value === 'replace' && selectedFiles.value.length === 0 && !keepOriginalName.value) {
+    shareName.value = props.share.name
+  }
 }
 
 const handleUpload = async () => {
@@ -77,7 +100,8 @@ const handleUpload = async () => {
   try {
     if (mode.value === 'replace') {
       const { uploadId, path: filePath } = results[0]
-      await replaceShareFile(props.share.id, uploadId, filePath)
+      const nameToSend = shareName.value.trim() || null
+      await replaceShareFile(props.share.id, uploadId, filePath, nameToSend)
       toast.success('File replaced')
     } else {
       const uploadIds = results.map((r) => r.uploadId)
@@ -126,6 +150,22 @@ const handleUpload = async () => {
           <span class="file-size">{{ niceFileSize(item.file.size) }}</span>
           <button class="remove-btn" @click="removeFile(idx)"><X /></button>
         </div>
+      </div>
+
+      <!-- Replace-mode: share rename -->
+      <div v-if="mode === 'replace' && !uploading" class="rename-area">
+        <label class="rename-label">Share name</label>
+        <input
+          v-model="shareName"
+          type="text"
+          class="rename-input"
+          :disabled="keepOriginalName"
+          placeholder="Share name"
+        />
+        <label class="keep-original-label">
+          <input type="checkbox" v-model="keepOriginalName" />
+          Keep original share name
+        </label>
       </div>
 
       <!-- Upload progress -->
@@ -258,6 +298,50 @@ const handleUpload = async () => {
     display: flex; align-items: center; color: var(--panel-section-text-color); opacity: 0.5;
     &:hover { opacity: 1; }
     svg { width: 0.85rem; height: 0.85rem; }
+  }
+}
+
+.rename-area {
+  margin-bottom: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  .rename-label {
+    font-size: 0.85rem;
+    color: var(--panel-section-text-color);
+    opacity: 0.7;
+  }
+
+  .rename-input {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid rgba(128, 128, 128, 0.3);
+    background: var(--panel-section-background-color-alt);
+    color: var(--panel-section-text-color);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+    &:focus { outline: 2px solid var(--primary-color, #4f6ef7); border-color: transparent; }
+    &:disabled { opacity: 0.5; cursor: not-allowed; }
+  }
+
+  .keep-original-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    color: var(--panel-section-text-color);
+    opacity: 0.75;
+    cursor: pointer;
+
+    input[type="checkbox"] {
+      cursor: pointer;
+      width: auto;
+      height: auto;
+      margin-bottom: 0;
+      flex-shrink: 0;
+    }
   }
 }
 

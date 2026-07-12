@@ -1,6 +1,6 @@
 <script setup>
-import { ref, computed, onMounted, inject, defineExpose } from 'vue'
-import { getMyShares, expireShare, extendShare, setDownloadLimit, pruneExpiredShares, requestShareDeletion, undoShareDeletion } from '../../api'
+import { ref, computed, onMounted, onUnmounted, inject, defineExpose } from 'vue'
+import { getMyShares, expireShare, extendShare, setDownloadLimit, pruneExpiredShares, requestShareDeletion, undoShareDeletion, purgeShare } from '../../api'
 import {
   SquareArrowOutUpRight,
   CalendarPlus,
@@ -15,7 +15,8 @@ import {
   Undo2,
   Clock,
   FilePlus2,
-  Copy
+  Copy,
+  ChevronDown
 } from 'lucide-vue-next'
 import { useToast } from 'vue-toastification'
 import { niceFileSize, niceDate, niceFileName, niceNumber } from '../../utils'
@@ -39,10 +40,24 @@ const showDeletedShares = ref(false)
 const extendModalShare = ref(null)
 const manageFilesShare = ref(null)
 const cloneShareTarget = ref(null)
+const openDropdownId = ref(null)
+
+const toggleDropdown = (id) => {
+  openDropdownId.value = openDropdownId.value === id ? null : id
+}
+
+const closeDropdown = () => {
+  openDropdownId.value = null
+}
 
 onMounted(async () => {
   showDeletedShares.value = localStorage.getItem('showDeletedShares') === 'true'
   loadShares()
+  document.addEventListener('click', closeDropdown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdown)
 })
 
 const loadShares = async () => {
@@ -56,6 +71,10 @@ const activeShares = computed(() =>
 
 const pendingDeletionShares = computed(() =>
   shares.value.filter(s => s.status === 'pending_deletion')
+)
+
+const expiredShares = computed(() =>
+  shares.value.filter(s => s.expired && !s.deleted && s.status !== 'pending_deletion')
 )
 
 const handleExpireShareClick = async (share) => {
@@ -138,6 +157,18 @@ const handleUndoDeletionClick = async (share) => {
     })
 }
 
+const handlePurgeShareClick = async (share) => {
+  if (!confirm('Remove this deleted share from the list? This cannot be undone.')) return
+  purgeShare(share.id)
+    .then(() => {
+      toast.success('Share record removed')
+      loadShares()
+    })
+    .catch((e) => {
+      toast.error(e.message || 'Failed to remove share record')
+    })
+}
+
 const handlePruneExpiredShares = async () => {
   const confirmed = confirm(t.value('settings.confirm.pruneExpiredShares'))
   if (!confirmed) {
@@ -192,6 +223,21 @@ defineExpose({
         {{ $t('settings.help.downloadLimit.description2') }}
       </p>
     </HelpTip>
+    <!-- Expired shares notice -->
+    <div v-if="expiredShares.length > 0" class="expired-shares-notice">
+      <div class="expired-shares-notice-content">
+        <CalendarX2 class="expired-notice-icon" />
+        <div>
+          <strong>{{ $t('settings.expiredShares.title', { count: expiredShares.length }) }}</strong>
+          <p>{{ $t('settings.expiredShares.notice') }}</p>
+        </div>
+      </div>
+      <button class="secondary" @click="handlePruneExpiredShares">
+        <CalendarX2 />
+        {{ $t('settings.expiredShares.cleanUp') }}
+      </button>
+    </div>
+
     <table v-if="activeShares.length > 0">
       <thead>
         <tr>
@@ -291,55 +337,84 @@ defineExpose({
             </div>
           </td>
           <td width="1" style="white-space: nowrap">
-            <button
-              @click="handleExpireShareClick(share)"
-              class="clear-button"
-              :disabled="!enableExpireShareButton(share)"
-            >
-              <CalendarX2 />
-              {{ $t('share.button.expireNow') }}
-            </button>
-            <button
-              @click="handleExtendShareClick(share)"
-              class="secondary"
-              :disabled="!enableExtendShareButton(share)"
-            >
-              <CalendarPlus />
-              {{ $t('share.button.extend') }}
-            </button>
-            <button
-              @click="downloadShare(share)"
-              class="secondary icon-only"
-              title="Download all files"
-              :disabled="!enableDownloadButton(share)"
-            >
-              <HardDriveDownload style="margin-right: 0" />
-            </button>
-            <button
-              @click="handleRequestDeletionClick(share)"
-              class="danger"
-              :disabled="!enableRequestDeletionButton(share)"
-              :title="$t('share.button.requestDeletion')"
-            >
-              <Trash2 />
-              {{ $t('share.button.requestDeletion') }}
-            </button>
-            <button
-              v-if="!share.deleted"
-              @click="manageFilesShare = share"
-              class="secondary icon-only"
-              :title="share.files.length === 1 ? 'Replace file' : 'Add files'"
-            >
-              <FilePlus2 style="margin-right: 0" />
-            </button>
-            <button
-              v-if="!share.deleted"
-              @click="cloneShareTarget = share"
-              class="secondary icon-only"
-              title="Clone share"
-            >
-              <Copy style="margin-right: 0" />
-            </button>
+            <div class="actions-cell">
+              <div class="split-btn-group" :class="{ open: openDropdownId === share.id }" @click.stop>
+                <button
+                  class="split-btn-main clear-button"
+                  @click="handleExpireShareClick(share)"
+                  :disabled="!enableExpireShareButton(share)"
+                  :title="$t('share.button.expireNow')"
+                >
+                  <CalendarX2 />
+                  {{ $t('share.button.expireNow') }}
+                </button>
+                <button
+                  class="split-btn-chevron clear-button"
+                  @click="toggleDropdown(share.id)"
+                  title="More actions"
+                >
+                  <ChevronDown />
+                </button>
+                <div v-if="openDropdownId === share.id" class="action-dropdown">
+                  <button
+                    v-if="enableExtendShareButton(share)"
+                    class="dropdown-item"
+                    @click="handleExtendShareClick(share); closeDropdown()"
+                  >
+                    <CalendarPlus />
+                    {{ $t('share.button.extend') }}
+                  </button>
+                  <button
+                    v-if="enableRequestDeletionButton(share)"
+                    class="dropdown-item danger"
+                    @click="handleRequestDeletionClick(share); closeDropdown()"
+                  >
+                    <Trash2 />
+                    {{ $t('share.button.requestDeletion') }}
+                  </button>
+                  <button
+                    v-if="share.pending_deletion"
+                    class="dropdown-item"
+                    @click="handleUndoDeletionClick(share); closeDropdown()"
+                  >
+                    <Undo2 />
+                    {{ $t('share.button.undoDeletion') }}
+                  </button>
+                  <button
+                    v-if="share.deleted"
+                    class="dropdown-item danger"
+                    @click="handlePurgeShareClick(share); closeDropdown()"
+                  >
+                    <Trash2 />
+                    {{ $t('share.button.removeEntry') }}
+                  </button>
+                </div>
+              </div>
+              <button
+                class="secondary icon-only"
+                @click="downloadShare(share)"
+                :disabled="!enableDownloadButton(share)"
+                title="Download all files"
+              >
+                <HardDriveDownload style="margin-right: 0" />
+              </button>
+              <button
+                v-if="!share.deleted"
+                class="secondary icon-only"
+                @click="manageFilesShare = share"
+                :title="share.files.length === 1 ? 'Replace file' : 'Add files'"
+              >
+                <FilePlus2 style="margin-right: 0" />
+              </button>
+              <button
+                v-if="!share.deleted"
+                class="secondary icon-only"
+                @click="cloneShareTarget = share"
+                title="Clone share"
+              >
+                <Copy style="margin-right: 0" />
+              </button>
+            </div>
           </td>
         </tr>
       </tbody>
@@ -673,6 +748,139 @@ td {
   svg {
     width: 0.75rem;
     height: 0.75rem;
+  }
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  // Suppress global button margin-right so gap alone controls spacing
+  button {
+    margin-right: 0 !important;
+  }
+}
+
+.split-btn-group {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+
+  .split-btn-main {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right: 1px solid rgba(128, 128, 128, 0.25) !important;
+    margin-right: 0 !important;
+  }
+
+  .split-btn-chevron {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    padding: 0 7px !important;
+    min-width: unset !important;
+    margin-right: 0 !important;
+
+    svg {
+      width: 0.8rem;
+      height: 0.8rem;
+      margin: 0 !important;
+      transition: transform 0.15s;
+    }
+  }
+
+  &.open .split-btn-chevron svg {
+    transform: rotate(180deg);
+  }
+
+  .action-dropdown {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    z-index: 200;
+    background: var(--panel-section-background-color);
+    border: 1px solid rgba(128, 128, 128, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+    min-width: 190px;
+    overflow: hidden;
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+      padding: 9px 14px;
+      background: none;
+      border: none;
+      border-radius: 0;
+      text-align: left;
+      font-size: 0.85rem;
+      color: var(--panel-section-text-color);
+      cursor: pointer;
+      white-space: nowrap;
+      margin: 0;
+
+      &:hover {
+        background: var(--panel-section-background-color-alt);
+      }
+
+      &.danger {
+        color: #dc3545;
+        svg { color: #dc3545; }
+      }
+
+      svg {
+        width: 0.9rem;
+        height: 0.9rem;
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+.expired-shares-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-bottom: 16px;
+
+  .expired-shares-notice-content {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+
+    .expired-notice-icon {
+      width: 1.2rem;
+      height: 1.2rem;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    strong {
+      display: block;
+      font-size: 0.9rem;
+      color: var(--panel-section-text-color);
+      margin-bottom: 2px;
+    }
+
+    p {
+      margin: 0;
+      font-size: 0.82rem;
+      color: var(--panel-section-text-color);
+      opacity: 0.8;
+      line-height: 1.5;
+    }
+  }
+
+  button {
+    flex-shrink: 0;
   }
 }
 </style>

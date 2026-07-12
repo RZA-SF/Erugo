@@ -24,23 +24,8 @@ class TusdHooksController extends Controller
     {
         // Security: Verify request is from internal network (tusd process)
         $clientIp = $request->ip();
-        $allowedNetworks = [
-            '172.', // Docker bridge networks
-            '10.',  // Private network
-            '192.168.', // Private network
-            '127.0.0.1', // Localhost IPv4
-            '::1', // Localhost IPv6
-        ];
-        
-        $isAllowed = false;
-        foreach ($allowedNetworks as $network) {
-            if (str_starts_with($clientIp, $network)) {
-                $isAllowed = true;
-                break;
-            }
-        }
-        
-        if (!$isAllowed) {
+
+        if (!$this->isInternalIp($clientIp)) {
             Log::warning('tusd hook rejected: unauthorized source IP', [
                 'ip' => $clientIp
             ]);
@@ -167,7 +152,7 @@ class TusdHooksController extends Controller
 
             return response()->json([
                 'ok' => false,
-                'message' => 'Unauthorized: ' . $e->getMessage()
+                'message' => 'Unauthorized'
             ], 401);
         }
     }
@@ -589,6 +574,69 @@ class TusdHooksController extends Controller
         }
         
         return $path;
+    }
+
+    /**
+     * Check whether an IP address falls within RFC-1918 / loopback ranges.
+     * Uses proper CIDR matching instead of string prefix comparison.
+     */
+    private function isInternalIp(string $ip): bool
+    {
+        // Unwrap IPv4-mapped IPv6 addresses (::ffff:x.x.x.x)
+        if (preg_match('/^::ffff:(\d+\.\d+\.\d+\.\d+)$/i', $ip, $m)) {
+            $ip = $m[1];
+        }
+
+        $cidrRanges = [
+            '127.0.0.1/32',
+            '::1/128',
+            '10.0.0.0/8',
+            '172.16.0.0/12',
+            '192.168.0.0/16',
+        ];
+
+        foreach ($cidrRanges as $cidr) {
+            [$subnet, $bits] = explode('/', $cidr);
+            $bits = (int) $bits;
+
+            if (str_contains($subnet, ':')) {
+                // IPv6 CIDR
+                if (!str_contains($ip, ':')) {
+                    continue;
+                }
+                $ipBin     = inet_pton($ip);
+                $subnetBin = inet_pton($subnet);
+                if ($ipBin === false || $subnetBin === false) {
+                    continue;
+                }
+                $fullBytes = intdiv($bits, 8);
+                $remainder = $bits % 8;
+                $mask      = str_repeat("\xff", $fullBytes);
+                if ($remainder) {
+                    $mask .= chr(0xff & (0xff << (8 - $remainder)));
+                }
+                $mask = str_pad($mask, 16, "\x00");
+                if (($ipBin & $mask) === ($subnetBin & $mask)) {
+                    return true;
+                }
+            } else {
+                // IPv4 CIDR
+                if (str_contains($ip, ':')) {
+                    continue;
+                }
+                $ipLong     = ip2long($ip);
+                $subnetLong = ip2long($subnet);
+                if ($ipLong === false || $subnetLong === false) {
+                    continue;
+                }
+                $maskLong = $bits > 0 ? (~0 << (32 - $bits)) : 0;
+                if (($ipLong & $maskLong) === ($subnetLong & $maskLong)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**

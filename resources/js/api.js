@@ -943,11 +943,13 @@ export const addFilesToShare = async (shareId, uploadIds, filePaths) => {
   return data.data.share
 }
 
-export const replaceShareFile = async (shareId, uploadId, filePath) => {
+export const replaceShareFile = async (shareId, uploadId, filePath, name = null) => {
+  const payload = { uploadIds: [uploadId], filePaths: { [uploadId]: filePath } }
+  if (name) payload.name = name
   const response = await fetchWithAuth(`${apiUrl}/api/shares/${shareId}/replace-file`, {
     method: 'POST',
     headers: { ...addJsonHeader() },
-    body: JSON.stringify({ uploadIds: [uploadId], filePaths: { [uploadId]: filePath } })
+    body: JSON.stringify(payload)
   })
   const data = await response.json()
   if (!response.ok) throw new Error(data.message)
@@ -1012,6 +1014,18 @@ export const deleteShareImmediately = async (id, confirmation) => {
     throw new Error(data.message)
   }
   return data.data.share
+}
+
+export const purgeShare = async (id) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/shares/${id}`, {
+    method: 'DELETE',
+    headers: { ...addJsonHeader() }
+  })
+  const data = await response.json()
+  if (!response.ok) {
+    throw new Error(data.message)
+  }
+  return data
 }
 
 export const undoShareDeletion = async (id) => {
@@ -1799,4 +1813,33 @@ export const uploadFilesInChunks = async (
       }
     }
   }
+}
+
+export const generateDiagnosticsBundle = async () => {
+  const response = await fetchWithAuth(`${apiUrl}/api/admin/diagnostics`, {
+    method: 'POST',
+    headers: { ...addJsonHeader() },
+  })
+  const data = await response.json()
+  if (!response.ok) throw new Error(data.message || 'Failed to generate diagnostics bundle')
+  return data.data  // { token, key, filename }
+}
+
+export const downloadDiagnosticsBundle = async (token, filename) => {
+  const response = await fetchWithAuth(`${apiUrl}/api/admin/diagnostics/${token}`, {
+    method: 'GET',
+  })
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}))
+    throw new Error(data.message || 'Failed to download diagnostics bundle')
+  }
+  const blob = await response.blob()
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
 }
