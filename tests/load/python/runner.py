@@ -135,14 +135,18 @@ async def head_req(session: aiohttp.ClientSession, url: str,
 # ─────────────────────────────────────────────────────────────────────────────
 
 async def login(session: aiohttp.ClientSession, base_url: str,
-                email: str, password: str) -> Optional[str]:
-    status, body = await post_json(
-        session, f"{base_url}/api/auth/login",
-        {"email": email, "password": password}
-    )
-    if status == 200 and isinstance(body.get("token"), str):
-        return body["token"]
-    print(f"  [!] Login failed — status={status} body={body}", file=sys.stderr)
+                email: str, password: str, retries: int = 3) -> Optional[str]:
+    for attempt in range(retries):
+        status, body = await post_json(
+            session, f"{base_url}/api/auth/login",
+            {"email": email, "password": password}
+        )
+        token = body.get("data", {}).get("access_token") or body.get("token")
+        if status == 200 and isinstance(token, str):
+            return token
+        if attempt < retries - 1:
+            await asyncio.sleep(0.5)
+    print(f"  [!] Login failed after {retries} attempts — status={status} body={body}", file=sys.stderr)
     return None
 
 
@@ -160,7 +164,8 @@ async def scenario_auth_worker(session, base_url, email, password, results, sem)
             {"email": email, "password": password}
         )
         latency = (time.monotonic() - t0) * 1000
-        ok = status == 200 and isinstance(body.get("token"), str)
+        _tok = body.get("data", {}).get("access_token") or body.get("token")
+        ok = status == 200 and isinstance(_tok, str)
         results.record("login", latency, ok)
 
 
@@ -329,6 +334,13 @@ async def main():
     async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
         print(f"Target: {args.base_url}")
         print(f"Scenario: {args.scenario}")
+
+        # Warm-up: prime PHP-FPM workers before the timed scenarios
+        print("Warming up...", end=" ", flush=True)
+        for _ in range(3):
+            await post_json(session, f"{args.base_url}/api/auth/login",
+                            {"email": args.email, "password": args.password})
+        print("done")
 
         # Authenticate
         token = await login(session, args.base_url, args.email, args.password)
