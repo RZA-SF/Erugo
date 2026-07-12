@@ -958,8 +958,8 @@
       "description": "Le seguenti condivisioni sono state richieste per l'eliminazione. È possibile annullare prima che vengano rimosse definitivamente.",
       "requestedOn": "Richiesto il",
       "deleteAll": "Elimina tutto definitivamente",
-      "confirmPrompt": "Digita DELETE per rimuovere definitivamente tutte le condivisioni in attesa e i relativi file. Questa azione non può essere annullata.",
-      "confirmMismatch": "La conferma non corrisponde — eliminazione annullata."
+      "confirmPrompt": "Digita DELETE (maiuscolo) per rimuovere definitivamente tutte le condivisioni in attesa e i relativi file. Questa azione non può essere annullata.",
+      "confirmMismatch": "La conferma non corrisponde — devi digitare DELETE in maiuscolo esattamente."
     }
   },
   "setup": {

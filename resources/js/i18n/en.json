@@ -732,8 +732,8 @@
       "description": "The following shares have been requested for deletion. You can undo this before they are permanently removed.",
       "requestedOn": "Requested On",
       "deleteAll": "Delete all permanently",
-      "confirmPrompt": "Type DELETE to permanently remove all pending shares and their files. This cannot be undone.",
-      "confirmMismatch": "Confirmation did not match — deletion cancelled."
+      "confirmPrompt": "Type DELETE (uppercase) to permanently remove all pending shares and their files. This cannot be undone.",
+      "confirmMismatch": "Confirmation did not match — you must type DELETE in uppercase exactly."
     },
     "system": {
       "allow_chunked_uploads": "Allow chunked upload mode",

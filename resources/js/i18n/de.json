@@ -958,8 +958,8 @@
       "description": "Für die folgenden Shares wurde eine Löschung beantragt. Sie können dies rückgängig machen, bevor sie dauerhaft entfernt werden.",
       "requestedOn": "Beantragt am",
       "deleteAll": "Alle dauerhaft löschen",
-      "confirmPrompt": "Geben Sie DELETE ein, um alle ausstehenden Shares und ihre Dateien dauerhaft zu entfernen. Dies kann nicht rückgängig gemacht werden.",
-      "confirmMismatch": "Bestätigung stimmte nicht überein — Löschung abgebrochen."
+      "confirmPrompt": "Geben Sie DELETE (Großbuchstaben) ein, um alle ausstehenden Shares und ihre Dateien dauerhaft zu entfernen. Dies kann nicht rückgängig gemacht werden.",
+      "confirmMismatch": "Bestätigung stimmte nicht überein — Sie müssen DELETE in Großbuchstaben eingeben."
     }
   },
   "setup": {

@@ -146,9 +146,13 @@ const handleUndoDeletionClick = async (share) => {
 
 const handleDeleteImmediatelyClick = async (share) => {
   const confirmation = prompt(
-    `Type "delete" to immediately remove all files for share "${share.name}".\n\nThis cannot be undone.`
+    `Type DELETE (uppercase) to immediately remove all files for share "${share.name}".\n\nThis cannot be undone.`
   )
   if (confirmation === null) return  // user cancelled
+  if (confirmation !== 'DELETE') {
+    toast.error('Confirmation did not match — type DELETE in uppercase to confirm')
+    return
+  }
   deleteShareImmediately(share.id, confirmation)
     .then(() => {
       toast.success('Share deleted immediately')
@@ -166,7 +170,7 @@ const canDeleteImmediately = (share) => {
 const handlePurgeShareClick = async (share) => {
   const input = prompt(t.value('settings.pendingDeletion.confirmPrompt'))
   if (input === null) return
-  if (input.toUpperCase() !== 'DELETE') {
+  if (input !== 'DELETE') {
     toast.error(t.value('settings.pendingDeletion.confirmMismatch'))
     return
   }

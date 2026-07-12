@@ -25,8 +25,8 @@
       "description": "Os compartilhamentos a seguir foram solicitados para exclusão. Você pode desfazer isso antes que sejam removidos permanentemente.",
       "requestedOn": "Solicitado em",
       "deleteAll": "Excluir tudo permanentemente",
-      "confirmPrompt": "Digite DELETE para remover permanentemente todos os compartilhamentos pendentes e seus arquivos. Isso não pode ser desfeito.",
-      "confirmMismatch": "Confirmação não corresponde — exclusão cancelada."
+      "confirmPrompt": "Digite DELETE (maiúsculas) para remover permanentemente todos os compartilhamentos pendentes e seus arquivos. Isso não pode ser desfeito.",
+      "confirmMismatch": "Confirmação não corresponde — você deve digitar DELETE em maiúsculas exatamente."
     }
   },
   "share": {

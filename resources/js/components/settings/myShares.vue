@@ -160,7 +160,7 @@ const handleUndoDeletionClick = async (share) => {
 const handlePurgeShareClick = async (share) => {
   const input = prompt(t.value('settings.pendingDeletion.confirmPrompt'))
   if (input === null) return
-  if (input.toUpperCase() !== 'DELETE') {
+  if (input !== 'DELETE') {
     toast.error(t.value('settings.pendingDeletion.confirmMismatch'))
     return
   }
@@ -177,7 +177,7 @@ const handlePurgeShareClick = async (share) => {
 const handlePruneExpiredShares = async () => {
   const input = prompt(t.value('settings.pendingDeletion.confirmPrompt'))
   if (input === null) return // cancelled
-  if (input.toUpperCase() !== 'DELETE') {
+  if (input !== 'DELETE') {
     toast.error(t.value('settings.pendingDeletion.confirmMismatch'))
     return
   }

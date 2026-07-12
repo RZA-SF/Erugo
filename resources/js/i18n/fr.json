@@ -958,8 +958,8 @@
       "description": "Les partages suivants ont été demandés pour suppression. Vous pouvez annuler cela avant qu'ils soient définitivement supprimés.",
       "requestedOn": "Demandé le",
       "deleteAll": "Tout supprimer définitivement",
-      "confirmPrompt": "Saisissez DELETE pour supprimer définitivement tous les partages en attente et leurs fichiers. Cette action est irréversible.",
-      "confirmMismatch": "La confirmation ne correspond pas — suppression annulée."
+      "confirmPrompt": "Saisissez DELETE (en majuscules) pour supprimer définitivement tous les partages en attente et leurs fichiers. Cette action est irréversible.",
+      "confirmMismatch": "La confirmation ne correspond pas — vous devez saisir DELETE en majuscules exactement."
     }
   },
   "setup": {
