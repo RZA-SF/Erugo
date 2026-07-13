@@ -901,7 +901,9 @@
       "smtp_username": "SMTP Username",
       "smtp_username_description": "The username required to authenticate with your SMTP server. This is typically the email address or account name associated with your email service.",
       "upload_modes": "Upload modes",
-      "your_auth_providers": "Your Auth Providers"
+      "your_auth_providers": "Your Auth Providers",
+      "slow_network_threshold": "Slow Network Threshold",
+      "slow_network_threshold_description": "Show a notice to users when upload or download speed falls below this value. Set to 0 to disable."
     },
     "system_auth_provider_info_link": "About {name}",
     "table": {
@@ -1095,5 +1097,9 @@
     "how_to_fix": "How to fix",
     "tusd_help_title": "Upload Service Unavailable",
     "tusd_unavailable": "Upload service unavailable. The tusd service is not running. File uploads will not work until this is resolved."
+  },
+  "slow_network": {
+    "notice": "Slow connection detected ({speed} KB/s). This transfer may take longer than expected.",
+    "dismiss": "Got it"
   }
 }

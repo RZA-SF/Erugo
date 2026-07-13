@@ -7,6 +7,8 @@ import { domError } from '../domData'
 import { useToast } from 'vue-toastification'
 import { useTranslate } from '@tolgee/vue'
 import DirectoryItem from './directory-item.vue'
+import { useSlowNetworkDetection } from '../composables/useSlowNetworkDetection'
+import SlowNetworkNotice from './SlowNetworkNotice.vue'
 
 const { t } = useTranslate()
 
@@ -71,6 +73,7 @@ const splitFullName = (fullName) => {
   return nameParts[0]
 }
 
+const { showNotice: showSlowNotice, dismissNotice: dismissSlowNotice, measuredSpeedKbps, thresholdKbpsComputed } = useSlowNetworkDetection('download', null)
 const password = ref('')
 const error = ref(null)
 
@@ -187,6 +190,12 @@ const filesByDirectory = computed(() => {
           {{ share.description }}
         </div>
       </div>
+      <SlowNetworkNotice
+        v-if="showSlowNotice && share"
+        :speed-kbps="measuredSpeedKbps"
+        :threshold-kbps="thresholdKbpsComputed"
+        @dismiss="dismissSlowNotice"
+      />
       <div class="download-button-container mt-3" v-if="!share.password_protected">
         <button class="download-button" @click="downloadFiles">
           {{ $t('download.files', 'Download {value} files', { value: share.file_count }) }}

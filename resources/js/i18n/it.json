@@ -868,7 +868,9 @@
       "smtp_username": "Nome utente SMTP",
       "smtp_username_description": "Il nome utente richiesto per l'autenticazione con il server SMTP. In genere si tratta dell'indirizzo e-mail o del nome dell'account associato al servizio di posta elettronica.",
       "upload_modes": "Modalità di caricamento",
-      "your_auth_providers": "I vostri fornitori di autorizzazioni"
+      "your_auth_providers": "I vostri fornitori di autorizzazioni",
+      "slow_network_threshold": "Soglia rete lenta",
+      "slow_network_threshold_description": "Mostra un avviso agli utenti quando la velocità di trasferimento scende sotto questo valore. Impostare a 0 per disabilitare."
     },
     "system_auth_provider_info_link": "Informazioni su {name}",
     "table": {
@@ -1074,5 +1076,9 @@
     "how_to_fix": "Come risolvere",
     "tusd_help_title": "Servizio di caricamento non disponibile",
     "tusd_unavailable": "Servizio di caricamento non disponibile. Il servizio tusd non è in esecuzione. Il caricamento dei file non funzionerà finché non sarà risolto."
+  },
+  "slow_network": {
+    "notice": "Connessione lenta rilevata ({speed} KB/s). Questo trasferimento potrebbe richiedere più tempo del previsto.",
+    "dismiss": "Capito"
   }
 }
