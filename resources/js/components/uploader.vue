@@ -88,7 +88,7 @@ const timeRemaining = computed(() => {
   const bytesRemaining = totalBytes.value - uploadedBytes.value
   return bytesRemaining / uploadSpeed.value // seconds
 })
-const { showNotice: showSlowNotice, dismissNotice: dismissSlowNotice, measuredSpeedKbps, thresholdKbpsComputed } = useSlowNetworkDetection('upload', uploadSpeed)
+const { showNotice: showSlowNotice, dismissNotice: dismissSlowNotice, measuredSpeedKbps, thresholdKbpsComputed } = useSlowNetworkDetection(uploadSpeed)
 const expiryValue = ref(domData().default_expiry_time)
 const expiryUnit = ref('days')
 const maxExpiryTime = ref(domData().max_expiry_time)

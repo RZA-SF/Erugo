@@ -20,10 +20,6 @@ use App\Http\Controllers\TusdHooksController;
 use App\Http\Controllers\StatsController;
 use App\Http\Controllers\SelfRegistrationController;
 use App\Http\Controllers\BackupsController;
-use App\Http\Controllers\SpeedProbeController;
-
-// Public speed probe — no auth required, used for slow-network detection
-Route::get('/speed-probe', [SpeedProbeController::class, 'probe'])->name('speed.probe');
 
 Route::get('/user', function (Request $request) {
     return $request->user();
