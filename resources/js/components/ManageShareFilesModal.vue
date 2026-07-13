@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, watch } from 'vue'
 import { uploadFileWithTus } from '../api'
 import { addFilesToShare, replaceShareFile } from '../api'
 import { useToast } from 'vue-toastification'
@@ -7,25 +7,12 @@ import { FilePlus2, RefreshCcw, X, Upload } from 'lucide-vue-next'
 import { niceFileSize } from '../utils'
 
 const props = defineProps({
-  share: { type: Object, required: true }
+  share: { type: Object, required: true },
+  mode: { type: String, required: true }  // 'add' or 'replace'
 })
 const emit = defineEmits(['close', 'done'])
 
 const toast = useToast()
-
-// Single-file shares support both replace and add; multi-file shares are add-only.
-const isSingleFile = computed(() => props.share.files.length === 1)
-const mode = ref(isSingleFile.value ? 'replace' : 'add')
-
-const switchMode = (newMode) => {
-  if (mode.value === newMode) return
-  mode.value = newMode
-  selectedFiles.value = []
-  if (newMode === 'replace') {
-    shareName.value = props.share.name
-    keepOriginalName.value = false
-  }
-}
 
 const selectedFiles = ref([])   // Array of { file: File, path: string }
 const uploading = ref(false)
@@ -49,7 +36,7 @@ const handleFileInput = (e) => {
     file: f,
     path: f.webkitRelativePath || f.name
   }))
-  if (mode.value === 'replace' && raw.length > 0 && !keepOriginalName.value) {
+  if (props.mode === 'replace' && raw.length > 0 && !keepOriginalName.value) {
     shareName.value = nameWithoutExtension(raw[0].name)
   }
   e.target.value = ''
@@ -65,7 +52,7 @@ watch(keepOriginalName, (keep) => {
 
 const removeFile = (index) => {
   selectedFiles.value.splice(index, 1)
-  if (mode.value === 'replace' && selectedFiles.value.length === 0 && !keepOriginalName.value) {
+  if (props.mode === 'replace' && selectedFiles.value.length === 0 && !keepOriginalName.value) {
     shareName.value = props.share.name
   }
 }
@@ -105,7 +92,7 @@ const handleUpload = async () => {
   progress.value = 100
 
   try {
-    if (mode.value === 'replace') {
+    if (props.mode === 'replace') {
       const { uploadId, path: filePath } = results[0]
       const nameToSend = shareName.value.trim() || null
       await replaceShareFile(props.share.id, uploadId, filePath, nameToSend)
@@ -132,24 +119,6 @@ const handleUpload = async () => {
         <component :is="mode === 'replace' ? RefreshCcw : FilePlus2" />
         <h3>{{ mode === 'replace' ? 'Replace file' : 'Add files' }}</h3>
         <button class="close-btn" @click="emit('close')" :disabled="uploading"><X /></button>
-      </div>
-
-      <!-- Mode toggle for single-file shares -->
-      <div v-if="isSingleFile && !uploading" class="mode-toggle">
-        <button
-          :class="['toggle-btn', { active: mode === 'replace' }]"
-          @click="switchMode('replace')"
-        >
-          <RefreshCcw />
-          Replace file
-        </button>
-        <button
-          :class="['toggle-btn', { active: mode === 'add' }]"
-          @click="switchMode('add')"
-        >
-          <FilePlus2 />
-          Add files
-        </button>
       </div>
 
       <!-- File picker -->
@@ -256,39 +225,6 @@ const handleUpload = async () => {
     &:hover { opacity: 1; }
     &:disabled { cursor: not-allowed; }
     svg { width: 1rem; height: 1rem; }
-  }
-}
-
-.mode-toggle {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-
-  .toggle-btn {
-    flex: 1;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    border: 1px solid rgba(128, 128, 128, 0.3);
-    background: var(--panel-section-background-color-alt);
-    color: var(--panel-section-text-color);
-    font-size: 0.85rem;
-    cursor: pointer;
-    opacity: 0.6;
-    transition: opacity 0.15s, border-color 0.15s;
-
-    svg { width: 0.9rem; height: 0.9rem; }
-
-    &:hover { opacity: 0.85; }
-
-    &.active {
-      opacity: 1;
-      border-color: var(--primary-color, #4f6ef7);
-      color: var(--primary-color, #4f6ef7);
-    }
   }
 }
 

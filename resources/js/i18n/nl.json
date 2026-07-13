@@ -870,7 +870,9 @@
       "upload_modes": "Upload opties",
       "your_auth_providers": "Uw autorisatoren",
       "slow_network_threshold": "Drempelwaarde langzaam netwerk",
-      "slow_network_threshold_description": "Toont gebruikers een melding wanneer de upload- of downloadsnelheid onder deze waarde valt. Stel in op 0 om uit te schakelen."
+      "slow_network_threshold_description": "Toont gebruikers een melding wanneer de upload- of downloadsnelheid onder deze waarde valt. Stel in op 0 om uit te schakelen.",
+      "allow_file_replacement": "Bestandsvervanging toestaan",
+      "allow_file_replacement_description": "Indien ingeschakeld kunnen gebruikers het bestand in een eenbestandsdeling vervangen zonder een nieuwe deling te maken. Schakel dit uit voor auditscenario's waarbij bestanden na het delen niet mogen worden gewijzigd."
     },
     "system_auth_provider_info_link": "Over {name}",
     "table": {

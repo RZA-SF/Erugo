@@ -337,6 +337,14 @@ class SettingsSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now()
             ],
+            [
+                'key' => 'allow_file_replacement',
+                'value' => '1',
+                'previous_value' => null,
+                'group' => 'system.shares',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
 
             //email subjects
             [

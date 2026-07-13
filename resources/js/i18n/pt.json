@@ -841,7 +841,9 @@
       "upload_modes": "Modos de carregamento",
       "your_auth_providers": "O seus Fornecedores de Autenticação",
       "slow_network_threshold": "Limite de rede lenta",
-      "slow_network_threshold_description": "Mostra um aviso aos utilizadores quando a velocidade de transferência cai abaixo deste valor. Definir para 0 para desativar."
+      "slow_network_threshold_description": "Mostra um aviso aos utilizadores quando a velocidade de transferência cai abaixo deste valor. Definir para 0 para desativar.",
+      "allow_file_replacement": "Permitir substituição de arquivo",
+      "allow_file_replacement_description": "Quando ativado, os utilizadores podem substituir o ficheiro numa partilha de ficheiro único sem criar uma nova partilha. Desativar para cenários de auditoria onde os ficheiros não devem ser alterados após a partilha."
     },
     "system_auth_provider_info_link": "Sobre {name}",
     "table": {

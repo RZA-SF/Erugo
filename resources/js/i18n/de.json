@@ -870,7 +870,9 @@
       "upload_modes": "Upload-Modi",
       "your_auth_providers": "Ihre Auth-Provider",
       "slow_network_threshold": "Langsam-Netzwerk-Schwellenwert",
-      "slow_network_threshold_description": "Zeigt Benutzern eine Benachrichtigung an, wenn die Upload- oder Download-Geschwindigkeit unter diesen Wert fällt. Auf 0 setzen, um zu deaktivieren."
+      "slow_network_threshold_description": "Zeigt Benutzern eine Benachrichtigung an, wenn die Upload- oder Download-Geschwindigkeit unter diesen Wert fällt. Auf 0 setzen, um zu deaktivieren.",
+      "allow_file_replacement": "Dateiersetzung erlauben",
+      "allow_file_replacement_description": "Wenn aktiviert, können Benutzer die Datei in einer Einzeldatei-Freigabe ersetzen, ohne eine neue Freigabe zu erstellen. Deaktivieren Sie dies für Audit-Szenarien, bei denen Dateien nach der Freigabe nicht geändert werden dürfen."
     },
     "system_auth_provider_info_link": "Über {name}",
     "table": {

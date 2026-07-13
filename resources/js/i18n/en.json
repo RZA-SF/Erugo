@@ -903,7 +903,9 @@
       "upload_modes": "Upload modes",
       "your_auth_providers": "Your Auth Providers",
       "slow_network_threshold": "Slow Network Threshold",
-      "slow_network_threshold_description": "Show a notice to users when upload or download speed falls below this value. Set to 0 to disable."
+      "slow_network_threshold_description": "Show a notice to users when upload or download speed falls below this value. Set to 0 to disable.",
+      "allow_file_replacement": "Allow file replacement",
+      "allow_file_replacement_description": "When enabled, users can replace the file in a single-file share without creating a new share. Disable for audit scenarios where files must not change after sharing."
     },
     "system_auth_provider_info_link": "About {name}",
     "table": {

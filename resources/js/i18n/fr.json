@@ -870,7 +870,9 @@
       "upload_modes": "Modes de téléchargement",
       "your_auth_providers": "Vos fournisseurs d'authentification",
       "slow_network_threshold": "Seuil réseau lent",
-      "slow_network_threshold_description": "Affiche un avis aux utilisateurs lorsque la vitesse de transfert est inférieure à cette valeur. Mettre à 0 pour désactiver."
+      "slow_network_threshold_description": "Affiche un avis aux utilisateurs lorsque la vitesse de transfert est inférieure à cette valeur. Mettre à 0 pour désactiver.",
+      "allow_file_replacement": "Autoriser le remplacement de fichier",
+      "allow_file_replacement_description": "Lorsqu'activé, les utilisateurs peuvent remplacer le fichier dans un partage à fichier unique sans créer un nouveau partage. Désactiver pour les scénarios d'audit où les fichiers ne doivent pas changer après le partage."
     },
     "system_auth_provider_info_link": "À propos",
     "table": {
