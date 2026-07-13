@@ -601,9 +601,9 @@
       "password_protect_description": "Crea una password per la tua condivisione. Chiunque scarichi questa condivisione avrà bisogno di questa password per accedervi. Nota bene: dopo la creazione, la password sarà crittografata e non sarà possibile recuperarla. Assicurati di salvarla in un luogo sicuro.",
       "remove_password": "Rimuovi la password"
     },
-        "diagnostics": {
+    "diagnostics": {
       "button": "Diagnostics",
-      "generating": "Collecting\u2026",
+      "generating": "Collecting…",
       "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
@@ -652,7 +652,9 @@
         "unique_downloaders_description": "Conteggio degli indirizzi IP unici che hanno scaricato le azioni.",
         "unique_downloaders_title": "Scaricatori unici",
         "users_description": "Panoramica degli account utente e dei loro livelli di attività.",
-        "users_title": "Statistiche degli utenti"
+        "users_title": "Statistiche degli utenti",
+        "physical_storage_title": "Archiviazione fisica vs logica",
+        "physical_storage_description": "L'archiviazione fisica conta ogni file univoco una sola volta, anche se clonato tramite hard link. L'archiviazione logica è la somma di tutte le dimensioni dei condivisioni."
       },
       "loading": "Caricamento delle statistiche...",
       "nav": {
@@ -682,7 +684,11 @@
         "of_disk": "del disco",
         "share_storage": "Condividere lo stoccaggio",
         "title": "Panoramica sull'archiviazione",
-        "used": "usato"
+        "used": "usato",
+        "logical_storage": "Archiviazione logica",
+        "physical_storage": "Archiviazione fisica",
+        "dedup_savings": "Risparmia {amount} rispetto al logico",
+        "dedup_savings_label": "Deduplicazione tramite hard link"
       },
       "users": {
         "active": "Attivo",

@@ -601,9 +601,9 @@
       "password_protect_description": "Erstellen Sie ein Passwort für Ihre Freigabe. Jeder, der diese Freigabe herunterlädt, benötigt dieses Passwort, um darauf zuzugreifen. Bitte beachten Sie: Nach der Erstellung wird dieses Kennwort verschlüsselt und wir können es nicht für Sie abrufen. Speichern Sie es daher an einem sicheren Ort.",
       "remove_password": "Passwort entfernen"
     },
-        "diagnostics": {
+    "diagnostics": {
       "button": "Diagnostics",
-      "generating": "Collecting\u2026",
+      "generating": "Collecting…",
       "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
@@ -652,7 +652,9 @@
         "unique_downloaders_description": "Anzahl der eindeutigen IP-Adressen, die Aktien heruntergeladen haben.",
         "unique_downloaders_title": "Einzigartige Downloader",
         "users_description": "Überblick über die Benutzerkonten und deren Aktivitätsniveau.",
-        "users_title": "Benutzer-Statistik"
+        "users_title": "Benutzer-Statistik",
+        "physical_storage_title": "Physischer vs. logischer Speicher",
+        "physical_storage_description": "Physischer Speicher zählt jede eindeutige Datei einmal, auch wenn sie über Hardlinks geklont wurde. Logischer Speicher ist die Summe aller Share-Größen."
       },
       "loading": "Laden der Statistiken...",
       "nav": {
@@ -682,7 +684,11 @@
         "of_disk": "der Scheibe",
         "share_storage": "Speicher teilen",
         "title": "Überblick über die Speicherung",
-        "used": "gebraucht"
+        "used": "gebraucht",
+        "logical_storage": "Logischer Speicher",
+        "physical_storage": "Physischer Speicher",
+        "dedup_savings": "Spart {amount} gegenüber logisch",
+        "dedup_savings_label": "Hardlink-Deduplizierung"
       },
       "users": {
         "active": "Aktiv",

@@ -601,9 +601,9 @@
       "password_protect_description": "Maak een wachtwoord aan voor je gedeelde link. Iedereen die dit bestand downloadt, heeft dit wachtwoord nodig om toegang te krijgen. Let op: Na het aanmaken wordt dit wachtwoord versleuteld en kunnen we het niet voor je achterhalen. Zorg ervoor dat je het op een veilige locatie opslaat.",
       "remove_password": "Wachtwoord verwijderen"
     },
-        "diagnostics": {
+    "diagnostics": {
       "button": "Diagnostics",
-      "generating": "Collecting\u2026",
+      "generating": "Collecting…",
       "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
@@ -652,7 +652,9 @@
         "unique_downloaders_description": "Aantal unieke IP-adressen die aandelen hebben gedownload.",
         "unique_downloaders_title": "Unieke downloaders",
         "users_description": "Overzicht van gebruikersaccounts en hun activiteitsniveaus.",
-        "users_title": "Gebruikersstatistieken"
+        "users_title": "Gebruikersstatistieken",
+        "physical_storage_title": "Fysieke vs. logische opslag",
+        "physical_storage_description": "Fysieke opslag telt elk uniek bestand één keer, ook als het via harde koppelingen is gekloond. Logische opslag is de som van alle share-groottes."
       },
       "loading": "Statistieken worden geladen...",
       "nav": {
@@ -682,7 +684,11 @@
         "of_disk": "van schijf",
         "share_storage": "Opslag delen",
         "title": "Overzicht opslag",
-        "used": "tweedehands"
+        "used": "tweedehands",
+        "logical_storage": "Logische opslag",
+        "physical_storage": "Fysieke opslag",
+        "dedup_savings": "Bespaart {amount} t.o.v. logisch",
+        "dedup_savings_label": "Deduplicatie via harde koppelingen"
       },
       "users": {
         "active": "Actief",

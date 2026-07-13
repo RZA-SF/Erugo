@@ -580,9 +580,9 @@
       "password_protect_description": "Crie uma palavra-passe para a sua partilha. Qualquer pessoa que descarregue esta partilha necessitará desta palavra-passe para aceder à mesma. Nota: Após a criação, esta palavra-passe será encriptada e não será possível recuperá-la. Certifique-se de que a guarda num local seguro.",
       "remove_password": "Remover a palavra-passe"
     },
-        "diagnostics": {
+    "diagnostics": {
       "button": "Diagnostics",
-      "generating": "Collecting\u2026",
+      "generating": "Collecting…",
       "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
@@ -631,7 +631,9 @@
         "unique_downloaders_description": "Contagem de endereços IP únicos que descarregaram partilhas.",
         "unique_downloaders_title": "Descarregadores únicos",
         "users_description": "Visão geral das contas de utilizador e dos seus níveis de atividade.",
-        "users_title": "Estatísticas dos utilizadores"
+        "users_title": "Estatísticas dos utilizadores",
+        "physical_storage_title": "Armazenamento físico vs lógico",
+        "physical_storage_description": "O armazenamento físico conta cada ficheiro único uma vez, mesmo que clonado via ligações físicas. O armazenamento lógico é a soma de todos os tamanhos de partilhas."
       },
       "loading": "A carregar estatísticas...",
       "nav": {
@@ -661,7 +663,11 @@
         "of_disk": "do disco",
         "share_storage": "Partilhar armazenamento",
         "title": "Visão geral do armazenamento",
-        "used": "utilizado"
+        "used": "utilizado",
+        "logical_storage": "Armazenamento lógico",
+        "physical_storage": "Armazenamento físico",
+        "dedup_savings": "Poupa {amount} vs lógico",
+        "dedup_savings_label": "Deduplicação por ligações físicas"
       },
       "users": {
         "active": "Ativar",

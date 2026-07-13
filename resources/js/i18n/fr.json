@@ -601,9 +601,9 @@
       "password_protect_description": "Créez un mot de passe pour votre partage. Toute personne téléchargeant ce partage aura besoin de ce mot de passe pour y accéder. Remarque : après sa création, ce mot de passe sera crypté et nous ne pourrons pas le récupérer pour vous. Veillez à le sauvegarder dans un endroit sûr.",
       "remove_password": "Supprimer le mot de passe"
     },
-        "diagnostics": {
+    "diagnostics": {
       "button": "Diagnostics",
-      "generating": "Collecting\u2026",
+      "generating": "Collecting…",
       "confirm": "Collect and download a diagnostic bundle? This may take a few seconds."
     },
     "stats": {
@@ -652,7 +652,9 @@
         "unique_downloaders_description": "Nombre d'adresses IP uniques ayant téléchargé des partages.",
         "unique_downloaders_title": "Téléchargeurs uniques",
         "users_description": "Vue d'ensemble des comptes d'utilisateurs et de leurs niveaux d'activité.",
-        "users_title": "Statistiques sur les utilisateurs"
+        "users_title": "Statistiques sur les utilisateurs",
+        "physical_storage_title": "Stockage physique vs logique",
+        "physical_storage_description": "Le stockage physique compte chaque fichier unique une seule fois, même cloné par liens physiques. Le stockage logique est la somme de toutes les tailles de partages."
       },
       "loading": "Chargement des statistiques...",
       "nav": {
@@ -682,7 +684,11 @@
         "of_disk": "de disque",
         "share_storage": "Stockage utilisé par les partages\n",
         "title": "Aperçu du stockage",
-        "used": "utilisé(s)"
+        "used": "utilisé(s)",
+        "logical_storage": "Stockage logique",
+        "physical_storage": "Stockage physique",
+        "dedup_savings": "Économise {amount} par rapport au logique",
+        "dedup_savings_label": "Déduplication par liens physiques"
       },
       "users": {
         "active": "Actif",

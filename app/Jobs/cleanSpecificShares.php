@@ -6,6 +6,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use App\Models\Share;
 use App\Models\ReverseShareInvite;
+use App\Jobs\RecalculatePhysicalStorage;
 
 class cleanSpecificShares implements ShouldQueue
 {
@@ -44,5 +45,7 @@ class cleanSpecificShares implements ShouldQueue
                 $share->cleanFiles(true);
             }
         }
+
+        RecalculatePhysicalStorage::dispatch();
     }
 }

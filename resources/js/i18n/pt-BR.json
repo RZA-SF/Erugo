@@ -27,6 +27,18 @@
       "deleteAll": "Excluir tudo permanentemente",
       "confirmPrompt": "Digite DELETE (maiúsculas) para remover permanentemente todos os compartilhamentos pendentes e seus arquivos. Isso não pode ser desfeito.",
       "confirmMismatch": "Confirmação não corresponde — você deve digitar DELETE em maiúsculas exatamente."
+    },
+    "stats": {
+      "storage": {
+        "logical_storage": "Armazenamento lógico",
+        "physical_storage": "Armazenamento físico",
+        "dedup_savings": "Economiza {amount} vs lógico",
+        "dedup_savings_label": "Deduplicação por links físicos"
+      },
+      "help": {
+        "physical_storage_title": "Armazenamento físico vs lógico",
+        "physical_storage_description": "O armazenamento físico conta cada arquivo único uma vez, mesmo que clonado via links físicos. O armazenamento lógico é a soma de todos os tamanhos de compartilhamentos."
+      }
     }
   },
   "share": {

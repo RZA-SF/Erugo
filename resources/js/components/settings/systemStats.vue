@@ -202,6 +202,29 @@ const categoryColors = {
                       </div>
                     </div>
 
+                    <div class="stat-card" v-if="stats.storage.physical_bytes !== undefined">
+                      <div class="stat-icon">
+                        <HardDrive />
+                      </div>
+                      <div class="stat-content">
+                        <div class="stat-value">{{ stats.storage.physical_formatted }}</div>
+                        <div class="stat-label">{{ $t('settings.stats.storage.physical_storage') }}</div>
+                        <div class="stat-sublabel" v-if="stats.storage.dedup_savings_bytes > 0">
+                          {{ stats.storage.dedup_savings_bytes > 0 ? stats.storage.logical_formatted : '' }} {{ $t('settings.stats.storage.logical_storage') }}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="stat-card" v-if="stats.storage.dedup_savings_bytes > 0">
+                      <div class="stat-icon active">
+                        <HardDrive />
+                      </div>
+                      <div class="stat-content">
+                        <div class="stat-value">{{ $t('settings.stats.storage.dedup_savings', { amount: stats.storage.logical_formatted }) }}</div>
+                        <div class="stat-label">{{ $t('settings.stats.storage.dedup_savings_label') }}</div>
+                      </div>
+                    </div>
+
                     <div class="stat-card">
                       <div class="stat-icon free">
                         <HardDrive />
@@ -221,6 +244,8 @@ const categoryColors = {
                 <p>{{ $t('settings.stats.help.storage_description') }}</p>
                 <h6>{{ $t('settings.stats.help.disk_usage_title') }}</h6>
                 <p>{{ $t('settings.stats.help.disk_usage_description') }}</p>
+                <h6>{{ $t('settings.stats.help.physical_storage_title') }}</h6>
+                <p>{{ $t('settings.stats.help.physical_storage_description') }}</p>
               </div>
             </div>
           </div>

@@ -12,6 +12,7 @@ use App\Models\UploadSession;
 use App\Models\ReverseShareInvite;
 use Carbon\Carbon;
 use App\Jobs\CreateShareZip;
+use App\Jobs\RecalculatePhysicalStorage;
 use App\Mail\shareCreatedMail;
 use App\Jobs\sendEmail;
 use App\Models\Setting;
@@ -478,7 +479,7 @@ class UploadsController extends Controller
 
     $completePath = storage_path('app/shares/' . $share->path);
     if (!is_dir($completePath)) {
-      mkdir($completePath, 0777, true);
+      mkdir($completePath, 0750, true);
     }
 
     $uploadIdToFile = $this->buildUploadIdToFileMap($sessions, $files);
@@ -488,7 +489,7 @@ class UploadsController extends Controller
       $originalPath = $this->sanitizePath($originalPath);
 
       $destPath = rtrim($completePath . '/' . $originalPath, '/');
-      if (!is_dir($destPath)) mkdir($destPath, 0777, true);
+      if (!is_dir($destPath)) mkdir($destPath, 0750, true);
 
       $resolvedDest  = realpath($destPath);
       $resolvedShare = realpath($completePath);
@@ -591,7 +592,7 @@ class UploadsController extends Controller
     $oldFile->delete();
 
     // Move new file into share directory root
-    if (!is_dir($shareDirPath)) mkdir($shareDirPath, 0777, true);
+    if (!is_dir($shareDirPath)) mkdir($shareDirPath, 0750, true);
     $sourcePath = storage_path('app/' . $newFile->temp_path);
     $destFile   = $shareDirPath . '/' . $newFile->name;
     if (file_exists($sourcePath)) {
@@ -614,6 +615,8 @@ class UploadsController extends Controller
       $share->name = $request->input('name');
     }
     $share->save();
+
+    RecalculatePhysicalStorage::dispatch();
 
     return response()->json(['status' => 'success', 'message' => 'File replaced', 'data' => ['share' => $share->fresh(['files'])]]);
   }
