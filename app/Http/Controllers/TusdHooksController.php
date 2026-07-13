@@ -22,14 +22,23 @@ class TusdHooksController extends Controller
      */
     public function handleHook(Request $request)
     {
-        // Security: Verify request is from internal network (tusd process)
-        $clientIp = $request->ip();
-
-        if (!$this->isInternalIp($clientIp)) {
-            Log::warning('tusd hook rejected: unauthorized source IP', [
-                'ip' => $clientIp
-            ]);
-            return response()->json(['ok' => false, 'message' => 'Forbidden'], 403);
+        // Security: validate shared secret when TUSD_HOOK_SECRET is configured,
+        // otherwise fall back to internal-IP check for backwards compatibility.
+        $hookSecret = config('services.tusd.hook_secret');
+        if ($hookSecret) {
+            $providedSecret = $request->header('Hook-Secret');
+            if (!hash_equals($hookSecret, (string) $providedSecret)) {
+                Log::warning('tusd hook rejected: invalid Hook-Secret header');
+                return response()->json(['ok' => false, 'message' => 'Forbidden'], 403);
+            }
+        } else {
+            $clientIp = $request->ip();
+            if (!$this->isInternalIp($clientIp)) {
+                Log::warning('tusd hook rejected: unauthorized source IP', [
+                    'ip' => $clientIp
+                ]);
+                return response()->json(['ok' => false, 'message' => 'Forbidden'], 403);
+            }
         }
 
         $payload = $request->all();

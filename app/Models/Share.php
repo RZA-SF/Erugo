@@ -45,6 +45,7 @@ class Share extends Model
   protected $hidden = [
     'path',
     'user_id',
+    'password',
   ];
 
   public function files()
