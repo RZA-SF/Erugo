@@ -405,7 +405,7 @@ defineExpose({
                 v-if="!share.deleted"
                 class="secondary icon-only"
                 @click="manageFilesShare = share"
-                :title="share.files.length === 1 ? 'Replace file' : 'Add files'"
+                :title="share.files.length === 1 ? 'Replace or add files' : 'Add files'"
               >
                 <FilePlus2 style="margin-right: 0" />
               </button>
