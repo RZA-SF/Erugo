@@ -78,7 +78,7 @@ class AuthController extends Controller
         Auth::logout();
 
         //clear the refresh_token cookie
-        $cookie = cookie('refresh_token', '', 0, null, null, false, true);
+        $cookie = cookie('refresh_token', '', 0, null, null, app()->environment('production'), true);
         return response()->json([
             'status' => 'success',
             'message' => 'Logout successful'
@@ -157,7 +157,7 @@ class AuthController extends Controller
         $twentyFourHours = 60 * 60 * 24;
         $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
 
-        $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
+        $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, app()->environment('production'), true);
 
         return response()->json([
             'status' => 'success',
@@ -241,7 +241,7 @@ class AuthController extends Controller
         if ($status === Password::PASSWORD_RESET) {
             $user = User::where('email', $request->email)->first();
             $refreshToken = Auth::setTTL($twentyFourHours)->tokenById($user->id);
-            $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, false, true);
+            $cookie = cookie('refresh_token', $refreshToken, $twentyFourHours, null, null, app()->environment('production'), true);
             return response()->json([
                 'status' => 'success',
                 'message' => 'Password reset successfully'
