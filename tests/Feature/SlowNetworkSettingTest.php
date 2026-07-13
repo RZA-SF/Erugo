@@ -97,6 +97,23 @@ class SlowNetworkSettingTest extends TestCase
     }
 
     // ──────────────────────────────────────────────────────────────────────────
+    // Non-admin can READ the setting (system.shares is not credentials-restricted)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    public function test_non_admin_can_read_system_shares_group(): void
+    {
+        $this->artisan('db:seed', ['--class' => 'SettingsSeeder'])->assertSuccessful();
+        $user = $this->makeUser();
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->getJson('/api/settings/group/system.shares')
+            ->assertStatus(200);
+
+        $keys = collect($response->json('data.settings'))->pluck('key');
+        $this->assertTrue($keys->contains('slow_network_threshold_kbps'));
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
     // Non-admin cannot write the setting
     // ──────────────────────────────────────────────────────────────────────────
 
