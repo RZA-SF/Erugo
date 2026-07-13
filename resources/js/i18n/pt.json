@@ -857,7 +857,7 @@
       "actions": "Ações",
       "active": "Ativar",
       "add": "Adicionar Utilizador",
-      "add_user_description": "Enviaremos um e-mail ao utilizador com um link para definir a sua palavra&nbsp;passe.",
+      "add_user_description": "Enviaremos um e-mail ao utilizador com um link para definir a sua palavra passe.",
       "add_user_self_registration_tip_off": "O auto-registo está atualmente desativado para a autenticação de correio eletrónico. Active-o para permitir que os utilizadores criem as suas próprias contas em vez de as adicionarem manualmente.",
       "add_user_self_registration_tip_off_short": "O auto-registo está desativado. Clique aqui para gerir.",
       "add_user_self_registration_tip_on": "O auto-registo está ativado. Os utilizadores podem criar as suas próprias contas.",

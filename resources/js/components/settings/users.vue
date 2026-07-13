@@ -243,7 +243,7 @@ const confirmForceResetPassword = () => {
         <UserPlus />
         {{ $t('settings.users.add') }}
       </h2>
-      <p v-html="$t('settings.users.add_user_description')"></p>
+      <p>{{ $t('settings.users.add_user_description') }}</p>
       <p v-if="selfRegistrationEnabled">{{ $t('settings.users.add_user_self_registration_tip_on') }}</p>
       <p v-else>{{ $t('settings.users.add_user_self_registration_tip_off') }}</p>
       <div class="input-container">
