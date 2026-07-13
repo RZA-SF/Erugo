@@ -97,41 +97,54 @@ class PhysicalStorageTest extends TestCase
     {
         Cache::forget('physical_storage_bytes');
 
-        $owner = $this->makeUser();
-
-        // Create a directory with one file and a hard link of it
-        $testDir = storage_path('app/shares/__phys_hardlink_test__');
+        // Create an isolated test directory outside the shares root so other
+        // test files on disk do not affect the inode count we're measuring.
+        $testDir = storage_path('app/__phys_hardlink_test__');
         if (!is_dir($testDir)) {
             mkdir($testDir, 0755, true);
         }
 
         $fileA = $testDir . '/fileA.bin';
         $fileB = $testDir . '/fileB.bin';  // distinct file
-        $fileC = $testDir . '/fileC.bin';  // hard link of fileA
+        $fileC = $testDir . '/fileC.bin';  // hard link of fileA — same inode
 
         try {
             file_put_contents($fileA, str_repeat('A', 1024));
             file_put_contents($fileB, str_repeat('B', 2048));
             link($fileA, $fileC);
 
-            (new RecalculatePhysicalStorage())->handle();
-
-            $physical = Cache::get('physical_storage_bytes');
-
-            // fileA (1024) + fileB (2048) = 3072; fileC is same inode as fileA.
-            // Total must be less than 1024 + 2048 + 1024 (triple-counting).
-            // Hard-linked size: 3072. Verify inodes match and total is sane.
             $statA = stat($fileA);
             $statC = stat($fileC);
 
+            // Sanity-check that the hard link was created on the same device
             $this->assertEquals($statA['ino'], $statC['ino'], 'fileA and fileC must share an inode');
-            $this->assertGreaterThanOrEqual(3072, $physical, 'Physical total must include at least the two unique files');
-            $this->assertLessThan(1024 + 2048 + 1024, $physical, 'Hard link must not be counted twice');
+
+            // Baseline: physical before adding our test files
+            (new RecalculatePhysicalStorage())->handle();
+            $before = (int) Cache::get('physical_storage_bytes');
+
+            // Move test dir inside shares root so the job picks it up
+            $destDir = storage_path('app/shares/__phys_hardlink_test__');
+            rename($testDir, $destDir);
+            $fileA = str_replace($testDir, $destDir, $fileA);
+            $fileB = str_replace($testDir, $destDir, $fileB);
+            $fileC = str_replace($testDir, $destDir, $fileC);
+
+            (new RecalculatePhysicalStorage())->handle();
+            $after = (int) Cache::get('physical_storage_bytes');
+
+            $added = $after - $before;
+
+            // The two unique files add 1024 + 2048 = 3072 bytes.
+            // fileC is a hard link of fileA — it must NOT be counted again.
+            $this->assertEquals(3072, $added, 'Only unique inodes should be counted; hard link must not add to total');
         } finally {
-            @unlink($fileA);
-            @unlink($fileB);
-            @unlink($fileC);
-            @rmdir($testDir);
+            $dir = storage_path('app/shares/__phys_hardlink_test__');
+            foreach (['fileA.bin', 'fileB.bin', 'fileC.bin'] as $f) {
+                @unlink($dir . '/' . $f);
+            }
+            @rmdir($dir);
+            @rmdir(storage_path('app/__phys_hardlink_test__'));
         }
     }
 
