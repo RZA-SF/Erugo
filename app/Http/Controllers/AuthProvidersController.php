@@ -117,13 +117,23 @@ class AuthProvidersController extends Controller
   }
 
   /**
+   * Allowed auth provider short class names.
+   * Must match files in app/AuthProviders/
+   */
+  private const ALLOWED_PROVIDER_CLASSES = ['Authentik', 'Google', 'Microsoft', 'OIDC'];
+
+  /**
    * Convert short class name to fully qualified class name
-   * 
+   *
    * @param string $class Short class name
    * @return string Fully qualified class name
+   * @throws \InvalidArgumentException if class is not in the allowlist
    */
   private function getProviderClass($class)
   {
+    if (!in_array($class, self::ALLOWED_PROVIDER_CLASSES, true)) {
+      throw new \InvalidArgumentException("Unknown auth provider type: {$class}");
+    }
     return "App\\AuthProviders\\" . $class . "AuthProvider";
   }
 

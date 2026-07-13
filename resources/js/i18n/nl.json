@@ -896,7 +896,7 @@
       "actions": "Acties",
       "active": "Actief",
       "add": "Toevoegen gebruiker",
-      "add_user_description": "We sturen een e-mail naar de gebruiker met een link om het&nbsp;wachtwoord in te stellen.",
+      "add_user_description": "We sturen een e-mail naar de gebruiker met een link om het wachtwoord in te stellen.",
       "add_user_self_registration_tip_off": "Zelfregistratie is momenteel uitgeschakeld voor e-mailverificatie. Schakel dit in om gebruikers hun eigen accounts te laten maken in plaats van ze handmatig toe te voegen.",
       "add_user_self_registration_tip_off_short": "Zelfregistratie is uitgeschakeld. Klik hier om te beheren.",
       "add_user_self_registration_tip_on": "Zelfregistratie is ingeschakeld. Gebruikers kunnen hun eigen accounts aanmaken.",
