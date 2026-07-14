@@ -869,8 +869,6 @@
       "smtp_username_description": "De gebruikersnaam die nodig is om te verifiëren met je SMTP-server. Dit is meestal het e-mailadres of de accountnaam die is gekoppeld aan uw e-mailservice.",
       "upload_modes": "Upload opties",
       "your_auth_providers": "Uw autorisatoren",
-      "slow_network_threshold": "Drempelwaarde langzaam netwerk",
-      "slow_network_threshold_description": "Toont gebruikers een melding wanneer de upload- of downloadsnelheid onder deze waarde valt. Stel in op 0 om uit te schakelen.",
       "allow_file_replacement": "Bestandsvervanging toestaan",
       "allow_file_replacement_description": "Indien ingeschakeld kunnen gebruikers het bestand in een eenbestandsdeling vervangen zonder een nieuwe deling te maken. Schakel dit uit voor auditscenario's waarbij bestanden na het delen niet mogen worden gewijzigd."
     },
@@ -1078,9 +1076,5 @@
     "how_to_fix": "Hoe repareren",
     "tusd_help_title": "Uploaddienst niet beschikbaar",
     "tusd_unavailable": "Uploaddienst niet beschikbaar. De tusd-service wordt niet uitgevoerd. Het uploaden van bestanden werkt niet totdat dit is opgelost."
-  },
-  "slow_network": {
-    "notice": "Trage verbinding gedetecteerd ({speed} KB/s). Deze overdracht kan langer duren dan verwacht.",
-    "dismiss": "Begrepen"
   }
 }

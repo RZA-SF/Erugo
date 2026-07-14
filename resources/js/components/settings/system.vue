@@ -60,7 +60,6 @@ const settings = ref({
   max_expiry_time: '',
   max_share_size: '',
   max_share_size_unit: '',
-      slow_network_threshold_kbps: 500,
       allow_file_replacement: '1',
   clean_files_after_days: '',
   share_url_mode: 'haiku',
@@ -680,19 +679,6 @@ const handleDeleteAuthProvider = async (id) => {
                     placeholder="30"
                   />
                 </div>
-                <div class="setting-group-body-item">
-                  <label for="slow_network_threshold_kbps">
-                    {{ $t('settings.system.slow_network_threshold') }}
-                    <small>(KB/s)</small>
-                  </label>
-                  <input
-                    type="number"
-                    id="slow_network_threshold_kbps"
-                    v-model="settings.slow_network_threshold_kbps"
-                    placeholder="500"
-                    min="0"
-                  />
-                </div>
                 <h6 id="file_replacement" class="mt-3 mb-3">{{ $t('settings.system.file_replacement') }}</h6>
                 <div class="setting-group-body-item">
                   <div class="checkbox-container">
@@ -757,8 +743,6 @@ const handleDeleteAuthProvider = async (id) => {
               <p>{{ $t('settings.system.max_share_size_description') }}</p>
               <h6>{{ $t('settings.system.clean_files_after') }}</h6>
               <p>{{ $t('settings.system.clean_files_after_description') }}</p>
-              <h6>{{ $t('settings.system.slow_network_threshold') }}</h6>
-              <p>{{ $t('settings.system.slow_network_threshold_description') }}</p>
               <h6>{{ $t('settings.system.allow_file_replacement') }}</h6>
               <p>{{ $t('settings.system.allow_file_replacement_description') }}</p>
               <h6>{{ $t('settings.system.allow_reverse_shares') }}</h6>

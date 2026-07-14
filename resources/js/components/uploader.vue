@@ -27,8 +27,7 @@ import { useTranslate } from '@tolgee/vue'
 import { useToast } from 'vue-toastification'
 import { store } from '../store'
 import DirectoryItem from './directory-item.vue'
-import { useSlowNetworkDetection } from '../composables/useSlowNetworkDetection'
-import SlowNetworkNotice from './SlowNetworkNotice.vue'
+
 const { t } = useTranslate()
 const toast = useToast()
 const fileInput = ref(null)
@@ -88,7 +87,7 @@ const timeRemaining = computed(() => {
   const bytesRemaining = totalBytes.value - uploadedBytes.value
   return bytesRemaining / uploadSpeed.value // seconds
 })
-const { showNotice: showSlowNotice, dismissNotice: dismissSlowNotice, measuredSpeedKbps, thresholdKbpsComputed } = useSlowNetworkDetection(uploadSpeed)
+
 const expiryValue = ref(domData().default_expiry_time)
 const expiryUnit = ref('days')
 const maxExpiryTime = ref(domData().max_expiry_time)
@@ -848,13 +847,6 @@ const filesByDirectory = computed(() => {
             {{ $t('Processing uploaded files') }}
           </template>
         </div>
-
-        <SlowNetworkNotice
-          v-if="showSlowNotice && currentlyUploading"
-          :speed-kbps="measuredSpeedKbps"
-          :threshold-kbps="thresholdKbpsComputed"
-          @dismiss="dismissSlowNotice"
-        />
 
         <div class="progress-bar">
           <div class="progress-bar-fill" :style="{ width: `${uploadProgress}%` }"></div>

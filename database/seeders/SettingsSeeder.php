@@ -330,14 +330,6 @@ class SettingsSeeder extends Seeder
                 'updated_at' => now()
             ],
             [
-                'key' => 'slow_network_threshold_kbps',
-                'value' => '500',
-                'previous_value' => null,
-                'group' => 'system.shares',
-                'created_at' => now(),
-                'updated_at' => now()
-            ],
-            [
                 'key' => 'allow_file_replacement',
                 'value' => '1',
                 'previous_value' => null,
