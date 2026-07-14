@@ -313,13 +313,13 @@ class UploadsController extends Controller
       $destFile = $destPath . '/' . $sanitizedFilename;
       
       // Move file to share directory
-      // Use copy + unlink instead of rename to handle cross-filesystem moves
+      // rename() is instant on same filesystem (common case); falls back to
+      // copy+unlink on EXDEV (cross-filesystem volume mounts)
       if (file_exists($sourcePath)) {
-        if (copy($sourcePath, $destFile)) {
-          unlink($sourcePath);
-        } else {
-          // Fallback to rename if copy fails
-          rename($sourcePath, $destFile);
+        if (!rename($sourcePath, $destFile)) {
+          if (copy($sourcePath, $destFile)) {
+            unlink($sourcePath);
+          }
         }
       }
       
@@ -501,7 +501,9 @@ class UploadsController extends Controller
       $sourcePath = storage_path('app/' . $file->temp_path);
       $destFile   = $destPath . '/' . $file->name;
       if (file_exists($sourcePath)) {
-        copy($sourcePath, $destFile) ? unlink($sourcePath) : rename($sourcePath, $destFile);
+        if (!rename($sourcePath, $destFile)) {
+          if (copy($sourcePath, $destFile)) unlink($sourcePath);
+        }
       }
       if (!$isBundleUpload) {
         $infoPath = $sourcePath . '.info';
@@ -596,7 +598,9 @@ class UploadsController extends Controller
     $sourcePath = storage_path('app/' . $newFile->temp_path);
     $destFile   = $shareDirPath . '/' . $newFile->name;
     if (file_exists($sourcePath)) {
-      copy($sourcePath, $destFile) ? unlink($sourcePath) : rename($sourcePath, $destFile);
+      if (!rename($sourcePath, $destFile)) {
+        if (copy($sourcePath, $destFile)) unlink($sourcePath);
+      }
     }
     $infoPath = $sourcePath . '.info';
     if (file_exists($infoPath)) unlink($infoPath);
