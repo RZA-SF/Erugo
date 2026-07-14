@@ -709,7 +709,8 @@
         "logical_storage": "Logical Storage",
         "physical_storage": "Physical Storage",
         "dedup_savings": "Saves {amount} vs logical",
-        "dedup_savings_label": "Hard-link Deduplication"
+        "dedup_savings_label": "Hard-link Deduplication",
+        "deduplicated": "deduplicated"
       },
       "users": {
         "active": "Active",

@@ -170,6 +170,7 @@ class StatsController extends Controller
             'logical_formatted' => $this->formatBytes($usedBytes),
             'physical_bytes' => (int) Cache::get('physical_storage_bytes', $usedBytes),
             'physical_formatted' => $this->formatBytes(Cache::get('physical_storage_bytes', $usedBytes)),
+            'physical_usage_percent' => $totalDiskSpace > 0 ? round((Cache::get('physical_storage_bytes', $usedBytes) / $totalDiskSpace) * 100, 1) : 0,
             'dedup_savings_bytes' => (int) max(0, $usedBytes - Cache::get('physical_storage_bytes', $usedBytes)),
             'physical_storage_calculated_at' => Cache::get('physical_storage_calculated_at'),
         ];
