@@ -30,9 +30,11 @@
         }
         format json
         level INFO
-        exclude_path /build/*
     }
-    
+
+    # Skip access logging for Vite build assets (high-volume, no diagnostic value)
+    skip_log @build_assets
+
     # Provide security headers
     header {
         # Security headers
