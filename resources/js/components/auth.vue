@@ -187,6 +187,10 @@ const attemptResetPassword = async () => {
     toast.error(t.value('auth.please_enter_password_and_confirm_password'))
     return
   }
+  if (password.value.length < 8) {
+    toast.error(t.value('settings.users.password_min_length', { length: 8 }))
+    return
+  }
   if (password.value !== password_confirmation.value) {
     toast.error(t.value('auth.passwords_do_not_match'))
     return
@@ -499,6 +503,7 @@ const switchToLogin = () => {
           :placeholder="t('auth.confirm_password')"
           @keyup.enter="attemptResetPassword"
         />
+        <p class="password-hint">{{ t('settings.users.password_min_length', { length: 8 }) }}</p>
       </div>
       <div class="row mt-3 align-items-center">
         <div class="col">
@@ -549,5 +554,12 @@ const switchToLogin = () => {
 a.disabled {
   opacity: 0.5;
   pointer-events: none;
+}
+
+.password-hint {
+  font-size: 0.75rem;
+  opacity: 0.6;
+  margin-top: 0.4rem;
+  margin-bottom: 0;
 }
 </style>
