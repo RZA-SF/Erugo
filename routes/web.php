@@ -13,11 +13,11 @@ use App\Services\SettingsService;
 if (!function_exists('getSettings')) {
 function getSettings()
 {
-    
+
     $settingsService = new SettingsService();
 
-    
-    
+
+
     $settings = Setting::whereLike('group', 'ui%')
         ->orWhere('key', 'default_language')
         ->orWhere('key', 'show_language_selector')
